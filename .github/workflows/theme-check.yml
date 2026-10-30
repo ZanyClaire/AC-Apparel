@@ -1,0 +1,30 @@
+name: Theme checks
+
+# Deliberately separate from prelaunch.yml: pull requests — especially from
+# forks — must never receive the store credentials, and this workflow has no
+# access to secrets at all.
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: theme-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  theme:
+    name: Theme validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Run theme checks
+        run: node scripts/prelaunch.mjs --theme-only

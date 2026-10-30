@@ -1,0 +1,47 @@
+name: Pre-launch gate
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: prelaunch-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  prelaunch:
+    name: Theme and store checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      # Fail loudly rather than letting the gate report "could not run" for a
+      # secret that was never configured.
+      - name: Check credentials are configured
+        env:
+          STORE: ${{ secrets.SHOPIFY_STORE_DOMAIN }}
+          TOKEN: ${{ secrets.SHOPIFY_ADMIN_TOKEN }}
+        run: |
+          missing=""
+          if [ -z "$STORE" ]; then missing="$missing SHOPIFY_STORE_DOMAIN"; fi
+          if [ -z "$TOKEN" ]; then missing="$missing SHOPIFY_ADMIN_TOKEN"; fi
+          if [ -n "$missing" ]; then
+            echo "::error::Missing repository secret(s):$missing. Add them under Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+          echo "Shopify credentials present."
+
+      - name: Run pre-launch gate
+        env:
+          SHOPIFY_STORE_DOMAIN: ${{ secrets.SHOPIFY_STORE_DOMAIN }}
+          SHOPIFY_ADMIN_TOKEN: ${{ secrets.SHOPIFY_ADMIN_TOKEN }}
+        run: node scripts/prelaunch.mjs
