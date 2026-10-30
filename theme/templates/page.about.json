@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "hero": {
+      "type": "page-hero",
+      "settings": {
+        "heading": "Between the field and the frame.",
+        "text": "<p>Aethel &amp; Code is a small studio working where technical clothing meets digital craft.</p>"
+      }
+    },
+    "main": { "type": "main-page", "settings": { "show_hero": false } }
+  },
+  "order": ["hero", "main"]
+}

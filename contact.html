@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact — Aethel &amp; Code</title>
+<meta name="description" content="Write to the Aethel &amp; Code studio about sizing, orders, digital licences or collaboration.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231a1b18'/%3E%3Cpath d='M9 23L16 9l7 14M12 19h8' stroke='%23f4f1ea' stroke-width='1.4' fill='none'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#f4f1ea">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body data-page="contact">
+<div data-chrome="header"></div>
+
+<main id="main">
+  <div class="wrap page-head">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Home</a><span>/</span><span aria-current="page">Contact</span>
+    </nav>
+    <h1>Write to the studio.</h1>
+    <div class="page-head__row">
+      <p>Questions about fit, an existing order, digital licences or a collaboration — all land in the same inbox and are answered by a person.</p>
+    </div>
+  </div>
+
+  <section class="section" style="padding-top:clamp(1.5rem,3vw,2.5rem)">
+    <div class="wrap split split--wide-left" style="align-items:start">
+      <div>
+        <form data-form="contact" novalidate>
+          <div class="form-grid">
+            <div class="field">
+              <label for="c-name">Name</label>
+              <input id="c-name" name="name" type="text" autocomplete="name" required>
+              <p class="field__error" aria-live="polite"></p>
+            </div>
+            <div class="field">
+              <label for="c-email">Email</label>
+              <input id="c-email" name="email" type="email" autocomplete="email" required>
+              <p class="field__error" aria-live="polite"></p>
+            </div>
+            <div class="field field--full">
+              <label for="c-subject">Subject</label>
+              <select id="c-subject" name="subject">
+                <option>Sizing and fit</option>
+                <option>An existing order</option>
+                <option>Digital assets and licences</option>
+                <option>Press or collaboration</option>
+                <option>Something else</option>
+              </select>
+            </div>
+            <div class="field field--full">
+              <label for="c-message">Message</label>
+              <textarea id="c-message" name="message" placeholder="Order number if you have one." required></textarea>
+              <p class="field__error" aria-live="polite"></p>
+            </div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:1.25rem;margin-top:1.5rem">
+            <button class="btn" type="submit">Send message <span class="btn__arrow" aria-hidden="true">&rarr;</span></button>
+            <p class="form-note" style="margin:0">We reply within two working days.</p>
+          </div>
+          <p class="form-success" role="status" hidden tabindex="-1">Thank you — your message is with the studio. This demo form is not connected to a backend yet; in production it posts to the store's contact pipeline.</p>
+        </form>
+      </div>
+
+      <div class="studio">
+        <div class="studio__block">
+          <h3>Studio</h3>
+          <p>14 Meridian Lane<br>London E2 7DP<br>United Kingdom</p>
+        </div>
+        <div class="studio__block">
+          <h3>Second desk</h3>
+          <p>Grandagar&eth;ur 12<br>101 Reykjav&iacute;k<br>Iceland</p>
+        </div>
+        <div class="studio__block">
+          <h3>Email &amp; telephone</h3>
+          <p><a href="mailto:studio@aethelandcode.com" style="border-bottom:1px solid var(--line-strong)">studio@aethelandcode.com</a><br>+44 20 7946 0812<br>Mon–Fri, 10:00–18:00 GMT</p>
+        </div>
+        <div class="studio__block">
+          <h3>Orders &amp; digital delivery</h3>
+          <p>Digital looks are emailed automatically. If nothing arrives within ten minutes, check spam, then write to us with your order number and we will resend the link.</p>
+        </div>
+        <div class="studio__block">
+          <h3>Visits</h3>
+          <p>Fittings and asset previews by appointment only. Bring your avatar if you have one.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight section--hair">
+    <div class="wrap" style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:1.5rem;align-items:baseline">
+      <p class="muted" style="margin:0;max-width:46ch">Looking for delivery timings, duties or how returns work? It is all written out plainly.</p>
+      <a class="link-underline" href="policies.html">Shipping &amp; returns <span aria-hidden="true">&rarr;</span></a>
+    </div>
+  </section>
+</main>
+
+<div data-chrome="footer"></div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/site.js"></script>
+</body>
+</html>

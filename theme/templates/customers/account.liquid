@@ -1,0 +1,32 @@
+<div class="wrap simple-page">
+  <p class="label">Account</p>
+  <h1>Hello, {{ customer.first_name | default: customer.name }}</h1>
+
+  <p style="margin-top:1rem;font-size:.875rem">
+    <a class="link-underline" href="{{ routes.account_addresses_url }}">Addresses</a>
+    &nbsp;&middot;&nbsp;
+    <a class="link-underline" href="{{ routes.account_logout_url }}">Log out</a>
+  </p>
+
+  <h2 style="margin-top:2.5rem;font-size:var(--step-2)">Orders</h2>
+
+  {%- if customer.orders.size > 0 -%}
+    <table class="rate-table">
+      <thead>
+        <tr><th scope="col">Order</th><th scope="col">Date</th><th scope="col">Status</th><th scope="col">Total</th></tr>
+      </thead>
+      <tbody>
+        {%- for order in customer.orders -%}
+          <tr>
+            <td><a href="{{ order.customer_url }}">{{ order.name }}</a></td>
+            <td>{{ order.created_at | date: '%d %b %Y' }}</td>
+            <td>{{ order.financial_status_label }}</td>
+            <td>{{ order.total_price | money }}</td>
+          </tr>
+        {%- endfor -%}
+      </tbody>
+    </table>
+  {%- else -%}
+    <p class="muted">No orders yet. <a class="link-underline" href="{{ routes.all_products_collection_url }}">Start here</a>.</p>
+  {%- endif -%}
+</div>

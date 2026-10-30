@@ -1,0 +1,130 @@
+{%- assign feature_product = section.settings.product -%}
+{%- assign digital_twin = feature_product.metafields.custom.digital_twin.value -%}
+{%- assign digital_look = feature_product.metafields.custom.digital_look.value -%}
+
+<section class="section section--hair" aria-labelledby="phygital-title-{{ section.id }}">
+  <div class="wrap">
+    <div class="split split--wide-left">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="label">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        <h2 id="phygital-title-{{ section.id }}">{{ section.settings.heading }}</h2>
+        <div class="body rte">{{ section.settings.body }}</div>
+
+        <div class="split__actions">
+          {%- if section.settings.cta_label != blank -%}
+            <a class="btn" href="{{ section.settings.cta_link | default: routes.all_products_collection_url }}">
+              {{ section.settings.cta_label }}
+            </a>
+          {%- endif -%}
+          {%- if section.settings.secondary_label != blank -%}
+            <a class="link-underline" href="{{ section.settings.secondary_link | default: routes.all_products_collection_url }}">
+              {{ section.settings.secondary_label }}
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <div class="pairing">
+        <div class="pairing__cell">
+          <div class="media">
+            {%- if section.settings.image_physical != blank -%}
+              <div class="media--image" style="position:absolute;inset:0">
+                {{
+                  section.settings.image_physical
+                  | image_url: width: 1000
+                  | image_tag: loading: 'lazy', widths: '400, 700, 1000', sizes: '30vw', alt: section.settings.caption_physical
+                }}
+              </div>
+            {%- elsif feature_product.featured_image != blank -%}
+              <div class="media--image" style="position:absolute;inset:0">
+                {{
+                  feature_product.featured_image
+                  | image_url: width: 1000
+                  | image_tag: loading: 'lazy', widths: '400, 700, 1000', sizes: '30vw', alt: feature_product.title
+                }}
+              </div>
+            {%- else -%}
+              {% render 'plate', variant: 'studio' %}
+            {%- endif -%}
+          </div>
+          <span class="pairing__caption">{{ section.settings.caption_physical }}</span>
+        </div>
+
+        <div class="pairing__cell">
+          <div class="media">
+            {%- if section.settings.image_digital != blank -%}
+              <div class="media--image" style="position:absolute;inset:0">
+                {{
+                  section.settings.image_digital
+                  | image_url: width: 1000
+                  | image_tag: loading: 'lazy', widths: '400, 700, 1000', sizes: '30vw', alt: section.settings.caption_digital
+                }}
+              </div>
+            {%- elsif digital_look != blank -%}
+              {%- if digital_look.sources -%}
+                {{ digital_look | video_tag: autoplay: true, loop: true, muted: true, controls: false, playsinline: true }}
+              {%- else -%}
+                <div class="media--image" style="position:absolute;inset:0">
+                  {{ digital_look | image_url: width: 1000 | image_tag: loading: 'lazy', alt: section.settings.caption_digital }}
+                </div>
+              {%- endif -%}
+            {%- else -%}
+              {% render 'plate', variant: 'wire' %}
+            {%- endif -%}
+          </div>
+          <span class="pairing__caption">{{ section.settings.caption_digital }}</span>
+        </div>
+
+        <span class="pairing__link" aria-hidden="true">+</span>
+
+        <div class="pairing__foot">
+          <span>
+            {%- if feature_product != blank -%}
+              {{ feature_product.title }}
+            {%- else -%}
+              {{ section.settings.foot_left }}
+            {%- endif -%}
+          </span>
+          <span>
+            {%- if feature_product != blank -%}
+              {{ feature_product.price | money }}
+              {%- if digital_twin != blank and settings.digital_twin_included %} &middot; {{ 'products.includes_digital' | t }}{% endif -%}
+            {%- else -%}
+              {{ section.settings.foot_right }}
+            {%- endif -%}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Phygital split",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The phygital proposition" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "One garment. Two lives." },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body",
+      "default": "<p>Every physical piece ships with its digital twin: a rig-ready 3D asset of the same cut, cloth and colourway. Wear it on the hill. Wear it on an avatar.</p><p>The asset arrives by email the moment your order is confirmed, at no extra cost.</p>"
+    },
+    { "type": "product", "id": "product", "label": "Feature product", "info": "Drives the captions, price and digital-look image." },
+    { "type": "image_picker", "id": "image_physical", "label": "Physical image" },
+    { "type": "image_picker", "id": "image_digital", "label": "Digital look image" },
+    { "type": "text", "id": "caption_physical", "label": "Physical caption", "default": "Physical — charcoal wool" },
+    { "type": "text", "id": "caption_digital", "label": "Digital caption", "default": "Digital — same cut, rigged" },
+    { "type": "text", "id": "foot_left", "label": "Footer left (no product)", "default": "Cirque Trouser" },
+    { "type": "text", "id": "foot_right", "label": "Footer right (no product)", "default": "Digital twin included" },
+    { "type": "text", "id": "cta_label", "label": "Primary CTA", "default": "Shop the collection" },
+    { "type": "url", "id": "cta_link", "label": "Primary CTA link" },
+    { "type": "text", "id": "secondary_label", "label": "Secondary link", "default": "How delivery works" },
+    { "type": "url", "id": "secondary_link", "label": "Secondary link URL" }
+  ],
+  "presets": [{ "name": "Phygital split" }]
+}
+{% endschema %}

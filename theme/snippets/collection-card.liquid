@@ -1,0 +1,57 @@
+{%- comment -%}
+  Expects `card_collection`, optionally `tall`, `art`, `attributes`.
+{%- endcomment -%}
+{%- assign c = card_collection -%}
+{%- assign art_variant = art | default: 'studio' -%}
+
+{%- if c == blank -%}
+  <div class="collection-card{% if tall %} collection-card--tall{% endif %}">
+    <div class="media">{% render 'plate', variant: art_variant %}</div>
+    <div class="collection-card__body">
+      <div>
+        <h3>Choose a collection</h3>
+        <p>Assign one in the theme editor</p>
+      </div>
+    </div>
+  </div>
+{%- else -%}
+
+<a
+  class="collection-card{% if tall %} collection-card--tall{% endif %}"
+  href="{{ c.url }}"
+  {{ attributes }}
+>
+  <div class="media">
+    {%- if c.featured_image -%}
+      <div class="media--image" style="position:absolute;inset:0">
+        {{
+          c.featured_image
+          | image_url: width: 1400
+          | image_tag:
+            loading: 'lazy',
+            widths: '400, 700, 1000, 1400',
+            sizes: '(min-width: 900px) 55vw, 100vw',
+            alt: c.featured_image.alt
+        }}
+      </div>
+    {%- else -%}
+      {% render 'plate', variant: art_variant %}
+    {%- endif -%}
+  </div>
+
+  <div class="collection-card__body">
+    <div>
+      <h3>{{ c.title }}</h3>
+      <p>
+        {%- if c.description != blank -%}
+          {{ c.description | strip_html | truncate: 64 }}
+        {%- else -%}
+          {{ c.all_products_count }} {{ 'collections.pieces' | t }}
+        {%- endif -%}
+      </p>
+    </div>
+    <span class="collection-card__arrow" aria-hidden="true">&rarr;</span>
+  </div>
+</a>
+
+{%- endif -%}

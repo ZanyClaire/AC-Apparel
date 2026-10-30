@@ -1,0 +1,40 @@
+<div class="wrap simple-page" style="max-width:520px">
+  <h1>Sign in</h1>
+
+  {%- form 'customer_login' -%}
+    {%- if form.errors -%}
+      <p class="form-message form-message--error">{{ form.errors | default_errors }}</p>
+    {%- endif -%}
+
+    <div class="form-grid" style="grid-template-columns:1fr">
+      <div class="field">
+        <label for="CustomerEmail">Email</label>
+        <input id="CustomerEmail" type="email" name="customer[email]" autocomplete="email" required>
+      </div>
+      <div class="field">
+        <label for="CustomerPassword">Password</label>
+        <input id="CustomerPassword" type="password" name="customer[password]" autocomplete="current-password" required>
+      </div>
+    </div>
+
+    <button class="btn" type="submit" style="margin-top:1.25rem">Sign in</button>
+  {%- endform -%}
+
+  <p style="margin-top:1.5rem;font-size:.875rem">
+    <a class="link-underline" href="{{ routes.account_register_url }}">Create an account</a>
+  </p>
+
+  <details style="margin-top:1.5rem">
+    <summary style="cursor:pointer;font-size:.6875rem;letter-spacing:.12em;text-transform:uppercase">Forgot your password?</summary>
+    {%- form 'recover_customer_password' -%}
+      {%- if form.posted_successfully? -%}
+        <p class="form-message form-message--success">We have sent you a reset link.</p>
+      {%- endif -%}
+      <div class="field" style="margin-top:1rem">
+        <label for="RecoverEmail">Email</label>
+        <input id="RecoverEmail" type="email" name="email" autocomplete="email" required>
+      </div>
+      <button class="btn btn--ghost" type="submit" style="margin-top:1rem">Send reset link</button>
+    {%- endform -%}
+  </details>
+</div>

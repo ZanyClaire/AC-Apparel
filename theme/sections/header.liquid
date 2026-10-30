@@ -1,0 +1,149 @@
+{%- if section.settings.show_announcement and section.settings.announcement_text != blank -%}
+  <div class="announcement">
+    <div class="wrap announcement__inner">
+      <p style="margin:0">{{ section.settings.announcement_text }}</p>
+      {%- if section.settings.announcement_link != blank -%}
+        <a href="{{ section.settings.announcement_link }}">{{ section.settings.announcement_link_label | default: 'Read more' }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}
+
+<header class="nav">
+  <div class="wrap nav__inner">
+    <a class="wordmark" href="{{ routes.root_url }}">
+      {%- if section.settings.logo != blank -%}
+        {{ section.settings.logo | image_url: width: 320 | image_tag: alt: shop.name, style: 'height:28px;width:auto' }}
+      {%- else -%}
+        {{ shop.name | escape }}
+      {%- endif -%}
+    </a>
+
+    <nav aria-label="Primary">
+      <ul class="nav__links">
+        {%- for link in section.settings.menu.links -%}
+          <li>
+            <a href="{{ link.url }}" {% if link.current %}aria-current="page"{% endif %}>{{ link.title }}</a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+
+    <div class="nav__actions">
+      <button
+        class="cart-btn"
+        type="button"
+        data-open-cart
+        aria-haspopup="dialog"
+        aria-controls="drawer"
+      >
+        {{ 'general.cart' | t }}
+        <span class="cart-btn__count" data-cart-count data-empty="{% if cart.item_count == 0 %}true{% else %}false{% endif %}">
+          {{- cart.item_count -}}
+        </span>
+      </button>
+
+      <button
+        class="menu-toggle"
+        type="button"
+        data-open-menu
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+        aria-label="{{ 'general.menu' | t }}"
+      >
+        <span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-nav" id="mobile-nav" data-open="false" role="dialog" aria-modal="true" aria-label="{{ 'general.menu' | t }}">
+  <button class="mobile-nav__close" type="button" data-close-menu aria-label="{{ 'general.close' | t }}">&times;</button>
+
+  <ul>
+    {%- for link in section.settings.menu.links -%}
+      <li><a href="{{ link.url }}">{{ link.title }}<span>0{{ forloop.index }}</span></a></li>
+    {%- endfor -%}
+  </ul>
+
+  <div>
+    <ul style="margin-bottom:1.5rem">
+      {%- for link in section.settings.secondary_menu.links -%}
+        <li><a href="{{ link.url }}" style="font-family:var(--font-body);font-size:.8125rem;letter-spacing:.13em;text-transform:uppercase;color:var(--stone);padding-block:.6rem">{{ link.title }}</a></li>
+      {%- endfor -%}
+    </ul>
+    <p class="mobile-nav__foot">
+      {%- if section.settings.studio_address != blank -%}{{ section.settings.studio_address }}<br>{%- endif -%}
+      {{ section.settings.mobile_note }}
+    </p>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo",
+      "info": "Replaces the wordmark. Leave empty to use the store name."
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Primary menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "link_list",
+      "id": "secondary_menu",
+      "label": "Secondary menu",
+      "default": "footer"
+    },
+    {
+      "type": "header",
+      "content": "Announcement"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_announcement",
+      "label": "Show announcement bar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "announcement_text",
+      "label": "Announcement text",
+      "default": "Digital twin with every garment · Free shipping over £250"
+    },
+    {
+      "type": "url",
+      "id": "announcement_link",
+      "label": "Announcement link"
+    },
+    {
+      "type": "text",
+      "id": "announcement_link_label",
+      "label": "Announcement link label",
+      "default": "Read more"
+    },
+    {
+      "type": "header",
+      "content": "Mobile menu footer"
+    },
+    {
+      "type": "text",
+      "id": "studio_address",
+      "label": "Studio address",
+      "default": "Studio, 14 Meridian Lane, London E2"
+    },
+    {
+      "type": "text",
+      "id": "mobile_note",
+      "label": "Note",
+      "default": "Digital wardrobe delivered by email."
+    }
+  ]
+}
+{% endschema %}

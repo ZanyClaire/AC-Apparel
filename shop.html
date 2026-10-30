@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shop — Aethel &amp; Code</title>
+<meta name="description" content="Wool trousers, weatherproof shells, brushed overshirts and merino base layers. Every garment includes its digital twin.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231a1b18'/%3E%3Cpath d='M9 23L16 9l7 14M12 19h8' stroke='%23f4f1ea' stroke-width='1.4' fill='none'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#f4f1ea">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body data-page="shop">
+<div data-chrome="header"></div>
+
+<main id="main">
+  <div class="wrap page-head">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Home</a><span>/</span><span aria-current="page">Shop</span>
+    </nav>
+    <h1>The collection</h1>
+    <div class="page-head__row">
+      <p>Eight garments for mixed ground. Each one ships with a digital twin — the same cut, rigged and ready for the version of you that lives on screen.</p>
+      <a class="link-underline" href="digital-wardrobe.html">Digital only <span aria-hidden="true">&rarr;</span></a>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="wrap toolbar__inner">
+      <div class="chips" id="chips" role="group" aria-label="Filter by category"></div>
+      <div class="toolbar__right">
+        <span class="count" id="result-count" role="status" aria-live="polite"></span>
+        <label class="sr-only" for="sort" style="position:absolute;left:-9999px">Sort by</label>
+        <select class="select" id="sort">
+          <option value="featured">Featured</option>
+          <option value="low">Price — low to high</option>
+          <option value="high">Price — high to low</option>
+          <option value="az">A — Z</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap" style="padding-block:clamp(2rem,4vw,3rem) var(--section)">
+    <div class="grid-products" id="product-grid"></div>
+    <p class="empty-state" id="empty-state" hidden>No pieces in this category yet.</p>
+  </div>
+
+  <section class="section section--tight section--hair">
+    <div class="wrap newsletter">
+      <div>
+        <p class="label">Sizing, honestly</p>
+        <h2 style="font-size:var(--step-2);max-width:22ch">Cut for layering. Fit notes live on every product page.</h2>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:1.25rem;align-items:center;justify-content:flex-end">
+        <a class="link-underline" href="policies.html#returns">Shipping &amp; returns</a>
+        <a class="btn btn--ghost" href="contact.html">Ask the studio</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div data-chrome="footer"></div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/site.js"></script>
+</body>
+</html>

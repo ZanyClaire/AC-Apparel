@@ -1,0 +1,140 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Aethel & Code",
+    "theme_version": "1.0.0",
+    "theme_author": "Aethel & Code",
+    "theme_documentation_url": "https://shopify.dev/docs/storefronts/themes",
+    "theme_support_url": "https://shopify.dev/docs/storefronts/themes"
+  },
+  {
+    "name": "Colours",
+    "settings": [
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Background",
+        "default": "#F4F1EA"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Text",
+        "default": "#1A1B18"
+      },
+      {
+        "type": "color",
+        "id": "color_surface",
+        "label": "Surface",
+        "default": "#EBE7DD"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Accent",
+        "default": "#1F3A2E"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "text",
+        "id": "heading_font",
+        "label": "Heading font family",
+        "default": "Newsreader",
+        "info": "Any Google Fonts family. Applied to headlines and the wordmark."
+      },
+      {
+        "type": "text",
+        "id": "body_font",
+        "label": "Body font family",
+        "default": "Inter",
+        "info": "Any Google Fonts family. Applied to body copy and micro-labels."
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon",
+        "info": "64 × 64px recommended."
+      }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "range",
+        "id": "page_width",
+        "label": "Page width",
+        "min": 1200,
+        "max": 1800,
+        "step": 20,
+        "unit": "px",
+        "default": 1560
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "Cart behaviour",
+        "options": [
+          { "value": "drawer", "label": "Slide-out drawer" },
+          { "value": "page", "label": "Cart page" }
+        ],
+        "default": "drawer"
+      },
+      {
+        "type": "number",
+        "id": "free_shipping_threshold",
+        "label": "Free shipping threshold",
+        "info": "In your store currency, e.g. 250. Leave 0 to hide the progress bar.",
+        "default": 250
+      },
+      {
+        "type": "richtext",
+        "id": "cart_note",
+        "label": "Cart note",
+        "default": "<p>Digital looks are emailed the moment your order is confirmed.</p>"
+      }
+    ]
+  },
+  {
+    "name": "Product pages",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_digital_look",
+        "label": "Show the Digital Look tab",
+        "default": true,
+        "info": "Requires the custom.digital_look metafield on each product."
+      },
+      {
+        "type": "checkbox",
+        "id": "digital_twin_included",
+        "label": "Digital twin is included with garments",
+        "default": true,
+        "info": "Changes the copy and CTA. Fulfilment itself is handled by a cart transform or app."
+      },
+      {
+        "type": "text",
+        "id": "delivery_note",
+        "label": "Delivery note",
+        "default": "Free shipping over £250. The digital look is emailed with your order confirmation."
+      }
+    ]
+  },
+  {
+    "name": "Social",
+    "settings": [
+      { "type": "url", "id": "social_instagram", "label": "Instagram" },
+      { "type": "url", "id": "social_substack", "label": "Substack" },
+      { "type": "url", "id": "social_are_na", "label": "Are.na" }
+    ]
+  }
+]

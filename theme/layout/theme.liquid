@@ -1,0 +1,92 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="{{ settings.color_background }}">
+  <link rel="canonical" href="{{ canonical_url }}">
+
+  {%- if settings.favicon != blank -%}
+    <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 64, height: 64 }}">
+  {%- else -%}
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231a1b18'/%3E%3Cpath d='M9 23L16 9l7 14M12 19h8' stroke='%23f4f1ea' stroke-width='1.4' fill='none'/%3E%3C/svg%3E">
+  {%- endif -%}
+
+  <title>
+    {{ page_title }}
+    {%- if current_tags %} &ndash; {{ current_tags | join: ', ' }}{% endif -%}
+    {%- if current_page != 1 %} &ndash; {{ 'general.page' | t }} {{ current_page }}{% endif -%}
+    {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+  </title>
+
+  {%- if page_description -%}
+    <meta name="description" content="{{ page_description | escape }}">
+  {%- endif -%}
+
+  {{ content_for_header }}
+
+  {%- assign heading_family = settings.heading_font | default: 'Newsreader' | replace: ' ', '+' -%}
+  {%- assign body_family = settings.body_font | default: 'Inter' | replace: ' ', '+' -%}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family={{ heading_family }}:ital,wght@0,300;0,400;0,500;1,300&family={{ body_family }}:wght@300;400;500&display=swap"
+    rel="stylesheet">
+
+  {%- style -%}
+    :root {
+      --bone: {{ settings.color_background }};
+      --paper: {{ settings.color_surface }};
+      --ink: {{ settings.color_text }};
+      --forest: {{ settings.color_accent }};
+      --max: {{ settings.page_width }}px;
+      --font-display: "{{ settings.heading_font | default: 'Newsreader' | escape }}", 'Iowan Old Style', Georgia, serif;
+      --font-body: "{{ settings.body_font | default: 'Inter' | escape }}", 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+  {%- endstyle -%}
+
+  {{ 'theme.css' | asset_url | stylesheet_tag }}
+  <script>
+    document.documentElement.classList.remove('no-js');
+  </script>
+</head>
+
+<body class="template-{{ template.name | handle }}" data-page="{{ template.name }}">
+  <a class="skip" href="#main">{{ 'general.skip_to_content' | t }}</a>
+
+  {% section 'header' %}
+
+  <main id="main" role="main">
+    {{ content_for_layout }}
+  </main>
+
+  {% section 'footer' %}
+
+  {% render 'cart-drawer' %}
+
+  <script>
+    window.AethelConfig = {
+      moneyFormat: {{ shop.money_format | json }},
+      cartType: {{ settings.cart_type | json }},
+      freeShipping: {{ settings.free_shipping_threshold | times: 100 | json }},
+      itemCount: {{ cart.item_count | json }},
+      strings: {
+        addToCart: {{ 'products.add_to_cart' | t | json }},
+        soldOut: {{ 'products.sold_out' | t | json }},
+        added: {{ 'cart.added' | t | json }},
+        addedDigital: {{ 'cart.added_digital' | t | json }},
+        empty: {{ 'cart.empty' | t | json }},
+        emptyBody: {{ 'cart.empty_body' | t | json }},
+        continueShopping: {{ 'cart.continue_shopping' | t | json }},
+        remove: {{ 'cart.remove' | t | json }},
+        shipping: {{ 'cart.shipping' | t | json }},
+        shippingFree: {{ 'cart.shipping_free' | t | json }},
+        freeShippingRemaining: {{ 'cart.free_shipping_remaining' | t: amount: '[[amount]]' | json }},
+        freeShippingEarned: {{ 'cart.free_shipping_earned' | t | json }}
+      }
+    };
+  </script>
+  <script src="{{ 'theme.js' | asset_url }}" defer></script>
+</body>
+</html>

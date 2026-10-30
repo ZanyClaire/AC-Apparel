@@ -1,0 +1,15 @@
+{
+  "siteId": "2c114c7f-f06a-4660-8daa-6e9afae1fdd4",
+  "name": "Aethel & Code — Storefront",
+  "previewUrl": "https://site-a0cd90885a3d46f498e3983bb3af584b.freebuff.page",
+  "productionUrl": "https://site-80a8ccbb26cb4a2caa4dfe0fce05222d.freebuff.page",
+  "published": true,
+  "publishedAt": "2026-10-30T13:27:27Z",
+  "deployment": {
+    "manifest": "freebuff-sites-build/manifest.json",
+    "buildCommand": "node scripts/build-sites.mjs",
+    "entrypoint": "freebuff-sites-build/worker.js",
+    "assetsDirectory": "freebuff-sites-build/assets",
+    "note": "Static storefront only. The Shopify theme in theme/ is not deployed to Sites."
+  }
+}

@@ -1,0 +1,95 @@
+{%- assign types = collection.all_types -%}
+
+<div class="wrap page-head">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a>
+    <span>/</span>
+    <span aria-current="page">{{ collection.title }}</span>
+  </nav>
+
+  <h1>{{ collection.title }}</h1>
+
+  <div class="page-head__row">
+    {%- if collection.description != blank -%}
+      <div class="rte" style="max-width:46ch">{{ collection.description }}</div>
+    {%- endif -%}
+  </div>
+</div>
+
+<div class="toolbar" data-collection-root>
+  <div class="wrap toolbar__inner">
+    <div class="chips" role="group" aria-label="Filter by category">
+      <button class="chip" type="button" data-filter-type="all" aria-pressed="true">
+        {{ 'collections.all' | t }}
+      </button>
+      {%- for type in types -%}
+        <button class="chip" type="button" data-filter-type="{{ type | escape }}" aria-pressed="false">
+          {{ type }}
+        </button>
+      {%- endfor -%}
+    </div>
+
+    <div class="toolbar__right">
+      <span class="count" data-result-count aria-live="polite">
+        {{ collection.products_count }} {{ 'collections.pieces' | t }}
+      </span>
+
+      <form id="SortForm" method="get">
+        <label class="sr-only" for="SortBy">Sort</label>
+        <select
+          id="SortBy"
+          name="sort_by"
+          class="select"
+          data-sort
+          aria-label="{{ 'collections.sort' | t }}"
+        >
+          {%- for option in collection.sort_options -%}
+            <option value="{{ option.value }}" {% if option.value == collection.sort_by %}selected{% endif %}>
+              {{ option.name }}
+            </option>
+          {%- endfor -%}
+        </select>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="wrap" style="padding-block:clamp(2rem,4vw,3rem) var(--section)">
+  {%- paginate collection.products by section.settings.products_per_page -%}
+    {%- if collection.products.size > 0 -%}
+      <div class="grid-products" data-product-grid>
+        {%- for product in collection.products -%}
+          {%- assign art = 'studio' -%}
+          {%- assign art_index = forloop.index0 | modulo: 3 -%}
+          {%- case art_index -%}
+            {%- when 1 -%}{%- assign art = 'dune' -%}
+            {%- when 2 -%}{%- assign art = 'ridge' -%}
+          {%- endcase -%}
+          {%- render 'product-card', card_product: product, art: art -%}
+        {%- endfor -%}
+      </div>
+
+      <p class="empty-state" data-empty-state hidden>{{ 'collections.empty' | t }}</p>
+      {%- render 'pagination', paginate: paginate -%}
+    {%- else -%}
+      <p class="empty-state">{{ 'collections.empty' | t }}</p>
+    {%- endif -%}
+  {%- endpaginate -%}
+</div>
+
+{% schema %}
+{
+  "name": "Collection",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 6,
+      "max": 24,
+      "step": 3,
+      "default": 12
+    }
+  ]
+}
+{% endschema %}

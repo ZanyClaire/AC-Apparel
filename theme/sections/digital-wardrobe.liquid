@@ -1,0 +1,85 @@
+{%- if section.settings.collection != blank -%}
+  {%- assign wardrobe = section.settings.collection -%}
+{%- else -%}
+  {%- assign wardrobe = collections['digital'] -%}
+{%- endif -%}
+
+<section class="section section--ink" aria-labelledby="wardrobe-title-{{ section.id }}">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="label">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        <h2 id="wardrobe-title-{{ section.id }}">{{ section.settings.heading }}</h2>
+      </div>
+      <a class="link-underline" href="{{ wardrobe.url | default: routes.all_products_collection_url }}">
+        {{ section.settings.link_label }} <span aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
+
+    <div class="digital-strip">
+      {%- if wardrobe != blank and wardrobe.products.size > 0 -%}
+        {%- for product in wardrobe.products limit: 4 -%}
+          <a href="{{ product.url }}">
+            <div class="media">
+              {%- if product.featured_image -%}
+                <div class="media--image" style="position:absolute;inset:0">
+                  {{
+                    product.featured_image
+                    | image_url: width: 800
+                    | image_tag: loading: 'lazy', widths: '300, 500, 800', sizes: '25vw', alt: product.title
+                  }}
+                </div>
+              {%- else -%}
+                {% render 'plate', variant: 'wire' %}
+              {%- endif -%}
+            </div>
+            <span class="digital-strip__label">
+              {{ product.title }} — {{ product.price | money }}
+            </span>
+          </a>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..4) -%}
+          <a href="{{ routes.all_products_collection_url }}">
+            <div class="media">{% render 'plate', variant: 'wire' %}</div>
+            <span class="digital-strip__label">Select a collection</span>
+          </a>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:1.5rem;justify-content:space-between;align-items:baseline;margin-top:1.75rem">
+      <p class="muted" style="max-width:52ch;font-size:var(--step--1);margin:0">
+        {{ section.settings.note }}
+      </p>
+      {%- if section.settings.licence_label != blank -%}
+        <a class="link-underline" href="{{ section.settings.licence_link | default: '/pages/shipping-returns' }}">
+          {{ section.settings.licence_label }}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Digital wardrobe",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Digital only" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "The Digital Wardrobe" },
+    { "type": "collection", "id": "collection", "label": "Collection", "info": "Defaults to the 'digital' collection handle." },
+    { "type": "text", "id": "link_label", "label": "Link label", "default": "All digital pieces" },
+    {
+      "type": "textarea",
+      "id": "note",
+      "label": "Note",
+      "default": "Assets are delivered as CLO projects, USD, GLB or OBJ, with 2K–4K PBR textures. Licensed for personal and editorial use."
+    },
+    { "type": "text", "id": "licence_label", "label": "Licence link label", "default": "Licence details" },
+    { "type": "url", "id": "licence_link", "label": "Licence link" }
+  ],
+  "presets": [{ "name": "Digital wardrobe" }]
+}
+{% endschema %}

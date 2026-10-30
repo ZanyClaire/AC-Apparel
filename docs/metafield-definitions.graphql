@@ -1,0 +1,203 @@
+# Creates the ten product metafield definitions the Aethel & Code theme reads.
+#
+# How to run:
+#   1. Install Shopify's free GraphiQL app: https://shopify-graphiql-app.shopifycloud.com/
+#   2. Paste this entire document into the app and click Run.
+#   3. Confirm every alias returns "userErrors": [] and a created definition.
+#
+# Re-running is harmless: definitions that already exist return a TAKEN userError
+# under that alias and are left untouched. If an alias fails, nothing else is rolled
+# back — fix that one definition (usually a type mismatch) and run the document again.
+#
+# Namespace must stay "custom": the theme reads product.metafields.custom.*.
+# Types must match exactly or the value renders blank in Liquid.
+
+mutation CreateThemeMetafieldDefinitions {
+  # Links a garment to its digital asset. Enables the Digital Look tab, the card
+  # badge and the "Buy digital only" button with its price.
+  digitalTwin: metafieldDefinitionCreate(
+    definition: {
+      name: "Digital twin"
+      namespace: "custom"
+      key: "digital_twin"
+      description: "The digital asset product sold alongside this garment. Drives the Digital Look tab, the card badge and the Buy digital only button."
+      type: "product_reference"
+      ownerType: PRODUCT
+      access: { storefront: PUBLIC_READ }
+    }
+  ) {
+    createdDefinition {
+      id
+      name
+    }
+    userErrors { field message code }
+  }
+
+  # Marks the asset product itself: flips the product tabs and tags cart lines
+  # as instant download.
+  isDigitalAsset: metafieldDefinitionCreate(
+    definition: {
+      name: "Is digital asset"
+      namespace: "custom"
+      key: "is_digital_asset"
+      description: "True for digital-only products. Flips the product tabs to Asset preview / What you receive and marks the line as an instant download."
+      type: "boolean"
+      ownerType: PRODUCT
+      access: { storefront: PUBLIC_READ }
+    }
+  ) {
+    createdDefinition {
+      id
+      name
+    }
+    userErrors { field message code }
+  }
+
+  # Media for the Digital Look tab: image or video.
+  digitalLook: metafieldDefinitionCreate(
+    definition: {
+      name: "Digital look"
+      namespace: "custom"
+      key: "digital_look"
+      description: "Image or video shown in the Digital Look tab. Videos autoplay muted and looped. Falls back to generated wireframe art when empty."
+      type: "file_reference"
+      ownerType: PRODUCT
+      access: { storefront: PUBLIC_READ }
+    }
+  ) {
+    createdDefinition {
+      id
+      name
+    }
+    userErrors { field message code }
+  }
+
+  digitalLookCaption: metafieldDefinitionCreate(
+    definition: {
+      name: "Digital look caption"
+      namespace: "custom"
+      key: "digital_look_caption"
+      description: "Caption for the digital look media, also used as its alt text."
+      type: "single_line_text_field"
+      ownerType: PRODUCT
+      access: { storefront: PUBLIC_READ }
+    }
+  ) {
+    createdDefinition {
+      id
+      name
+    }
+    userErrors { field message code }
+  }
+
+  digitalFormat: metafieldDefinitionCreate(
+    definition: {
+      name: "Digital format"
+      namespace: "custom"
+      key: "digital_format"
+      description: "Formats and delivery line for an asset, e.g. FBX, USDZ, 4K PBR textures. Falls back to \"Files delivered instantly\"."
+      type: "single_line_text_field"
+      ownerType: PRODUCT
+      access: { storefront: PUBLIC_READ }
+    }
+  ) {
+    createdDefinition {
+      id
+      name
+    }
+    userErrors { field message code }
+  }
+
+  # Plain-text standfirst. Theme fallback: first 42 words of the description.
+  shortDescription: metafieldDefinitionCreate(
+    definition: {
+      name: "Short description"
+      namespace: "custom"
+      key: "short_description"
+      description: "Plain-text standfirst under the product title. No HTML. Falls back to the first 42 words of the description."
+      type: "multi_line_text_field"
+      ownerType: PRODUCT
+      access: { storefront: PUBLIC_READ }
+    }
+  ) {
+    createdDefinition {
+      id
+      name
+    }
+    userErrors { field message code }
+  }
+
+  # Rich text so it can carry lists and emphasis in the accordion.
+  specs: metafieldDefinitionCreate(
+    definition: {
+      name: "Specs"
+      namespace: "custom"
+      key: "specs"
+      description: "Contents of the Materials & construction accordion. Rich text. Falls back to the full product description."
+      type: "rich_text_field"
+      ownerType: PRODUCT
+      access: { storefront: PUBLIC_READ }
+    }
+  ) {
+    createdDefinition {
+      id
+      name
+    }
+    userErrors { field message code }
+  }
+
+  # Card meta line. Falls back to product type or vendor.
+  material: metafieldDefinitionCreate(
+    definition: {
+      name: "Material"
+      namespace: "custom"
+      key: "material"
+      description: "Short material line shown under the product name on cards, e.g. Wool gabardine. Falls back to product type or vendor."
+      type: "single_line_text_field"
+      ownerType: PRODUCT
+      access: { storefront: PUBLIC_READ }
+    }
+  ) {
+    createdDefinition {
+      id
+      name
+    }
+    userErrors { field message code }
+  }
+
+  fit: metafieldDefinitionCreate(
+    definition: {
+      name: "Fit"
+      namespace: "custom"
+      key: "fit"
+      description: "Fit notes. The Fit accordion is hidden when this is empty."
+      type: "multi_line_text_field"
+      ownerType: PRODUCT
+      access: { storefront: PUBLIC_READ }
+    }
+  ) {
+    createdDefinition {
+      id
+      name
+    }
+    userErrors { field message code }
+  }
+
+  care: metafieldDefinitionCreate(
+    definition: {
+      name: "Care and licence"
+      namespace: "custom"
+      key: "care"
+      description: "Care instructions and digital licence terms. The Care & licence accordion is hidden when this is empty."
+      type: "multi_line_text_field"
+      ownerType: PRODUCT
+      access: { storefront: PUBLIC_READ }
+    }
+  ) {
+    createdDefinition {
+      id
+      name
+    }
+    userErrors { field message code }
+  }
+}

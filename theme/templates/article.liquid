@@ -1,0 +1,15 @@
+<article class="wrap simple-page">
+  <div class="article-body">
+    <p class="label">{{ article.published_at | date: '%d %B %Y' }}</p>
+    <h1 style="margin-bottom:1.5rem">{{ article.title }}</h1>
+    {%- if article.image -%}
+      <div style="margin-bottom:2rem">
+        {{ article.image | image_url: width: 1400 | image_tag: alt: article.title }}
+      </div>
+    {%- endif -%}
+    <div class="rte">{{ article.content }}</div>
+    <p style="margin-top:3rem">
+      <a class="link-underline" href="{{ blog.url }}">All notes</a>
+    </p>
+  </div>
+</article>

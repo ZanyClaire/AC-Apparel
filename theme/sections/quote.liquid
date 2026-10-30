@@ -1,0 +1,32 @@
+<section class="section" aria-labelledby="quote-label-{{ section.id }}">
+  <div class="wrap">
+    <div class="quote">
+      <p class="label" id="quote-label-{{ section.id }}">{{ section.settings.eyebrow }}</p>
+      <blockquote>{{ section.settings.quote }}</blockquote>
+      <div class="quote__rule" aria-hidden="true"></div>
+      {%- if section.settings.link_label != blank -%}
+        <a class="link-underline" href="{{ section.settings.link | default: routes.root_url }}">
+          {{ section.settings.link_label }}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Quote",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Studio notes" },
+    {
+      "type": "inline_richtext",
+      "id": "quote",
+      "label": "Quote",
+      "default": "We design for two terrains: the one <em>underfoot</em>, and the one rendered."
+    },
+    { "type": "text", "id": "link_label", "label": "Link label", "default": "Read our story" },
+    { "type": "url", "id": "link", "label": "Link" }
+  ],
+  "presets": [{ "name": "Quote" }]
+}
+{% endschema %}

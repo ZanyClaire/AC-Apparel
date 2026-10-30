@@ -1,0 +1,56 @@
+<section class="section section--tight" aria-labelledby="pillars-title-{{ section.id }}">
+  <div class="wrap">
+    <div class="eyebrow-row">
+      <p class="label" id="pillars-title-{{ section.id }}">{{ section.settings.eyebrow }}</p>
+      {%- if section.settings.aside != blank -%}
+        <p class="label">{{ section.settings.aside }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="pillars">
+      {%- for block in section.blocks -%}
+        <div class="pillar" {{ block.shopify_attributes }}>
+          <span class="pillar__num">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+          <h3>{{ block.settings.heading }}</h3>
+          <div class="rte">{{ block.settings.text }}</div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Commitments",
+  "max_blocks": 3,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Three commitments" },
+    { "type": "text", "id": "aside", "label": "Right-hand label", "default": "Est. 2024 · London" }
+  ],
+  "blocks": [
+    {
+      "type": "pillar",
+      "name": "Commitment",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Quiet luxury craft" },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Italian wool, British wax, Japanese ripstop. Finished in small runs by makers we visit.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Commitments",
+      "blocks": [
+        { "type": "pillar", "settings": { "heading": "Quiet luxury craft" } },
+        { "type": "pillar", "settings": { "heading": "Function, not costume" } },
+        { "type": "pillar", "settings": { "heading": "Digital wardrobe included" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

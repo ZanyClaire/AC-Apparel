@@ -1,0 +1,389 @@
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign digital_twin = product.metafields.custom.digital_twin.value
+  assign digital_look = product.metafields.custom.digital_look.value
+  assign digital_caption = product.metafields.custom.digital_look_caption.value
+  assign is_digital = product.metafields.custom.is_digital_asset.value
+  assign short_description = product.metafields.custom.short_description.value
+  assign specs = product.metafields.custom.specs
+  assign fit = product.metafields.custom.fit.value
+  assign care = product.metafields.custom.care.value
+  assign format_note = product.metafields.custom.digital_format.value
+  assign has_digital_content = false
+  if digital_look != blank or digital_twin != blank or is_digital
+    assign has_digital_content = true
+  endif
+  assign show_digital_tab = false
+  if settings.enable_digital_look and has_digital_content
+    assign show_digital_tab = true
+  endif
+  if digital_twin != blank
+    assign twin_variant = digital_twin.selected_or_first_available_variant
+  endif
+-%}
+
+<div class="wrap">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a>
+    <span>/</span>
+    <a href="{{ product.collections.first.url | default: routes.all_products_collection_url }}">
+      {%- if product.collections.first -%}
+        {{ product.collections.first.title }}
+      {%- else -%}
+        {{ 'general.shop' | t }}
+      {%- endif -%}
+    </a>
+    <span>/</span>
+    <span aria-current="page">{{ product.title }}</span>
+  </nav>
+
+  <div class="pdp" data-product-root data-is-digital="{% if is_digital %}true{% else %}false{% endif %}">
+    <div class="pdp__media">
+      <div class="tabs" role="tablist" aria-label="{{ product.title }} media">
+        <button
+          class="tab"
+          id="tab-images-{{ section.id }}"
+          role="tab"
+          type="button"
+          aria-controls="panel-images-{{ section.id }}"
+          aria-selected="true"
+          data-tab
+        >
+          {%- if is_digital -%}Asset preview{%- else -%}{{ 'products.images' | t }}{%- endif -%}
+        </button>
+
+        {%- if show_digital_tab -%}
+          <button
+            class="tab"
+            id="tab-digital-{{ section.id }}"
+            role="tab"
+            type="button"
+            aria-controls="panel-digital-{{ section.id }}"
+            aria-selected="false"
+            data-tab
+          >
+            {%- if is_digital -%}What you receive{%- else -%}{{ 'products.digital_look' | t }}<sup>&#9679;</sup>{%- endif -%}
+          </button>
+        {%- endif -%}
+      </div>
+
+      <div id="panel-images-{{ section.id }}" role="tabpanel" aria-labelledby="tab-images-{{ section.id }}">
+        <div class="product-media">
+          <div class="product-media__stage">
+            {%- if product.media.size > 0 -%}
+              {%- for media in product.media limit: 4 -%}
+                <div class="product-media__item" data-media-item="{{ forloop.index0 }}" {% unless forloop.first %}hidden{% endunless %}>
+                  {%- case media.media_type -%}
+                    {%- when 'video' -%}
+                      {{ media | video_tag: controls: true, playsinline: true }}
+                    {%- when 'external_video' -%}
+                      {{ media | external_video_tag }}
+                    {%- when 'model' -%}
+                      {%- assign model_preview = media.preview_image | default: media -%}
+                      {{ model_preview | image_url: width: 1200 | image_tag: loading: 'lazy', alt: media.alt }}
+                    {%- else -%}
+                      {{
+                        media
+                        | image_url: width: 1200
+                        | image_tag:
+                          loading: 'lazy',
+                          widths: '500, 800, 1200',
+                          sizes: '(min-width: 1100px) 50vw, 100vw',
+                          alt: media.alt
+                      }}
+                  {%- endcase -%}
+                </div>
+              {%- endfor -%}
+            {%- else -%}
+              <div class="product-media__item" data-media-item="0">
+                {% render 'plate', variant: 'studio' %}
+                <span class="digital-look__empty">Add product photography in the admin</span>
+              </div>
+            {%- endif -%}
+
+            {%- if is_digital -%}
+              <span class="media__tag">{{ 'products.instant_download' | t }}</span>
+            {%- elsif digital_twin != blank and settings.digital_twin_included -%}
+              <span class="media__tag">{{ 'products.includes_digital' | t }}</span>
+            {%- endif -%}
+          </div>
+
+          {%- if product.media.size > 1 -%}
+            <div class="product-media__thumbs">
+              {%- for media in product.media limit: 4 -%}
+                <button
+                  class="thumb thumb--media"
+                  type="button"
+                  data-media-thumb="{{ forloop.index0 }}"
+                  aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}"
+                  aria-label="View image {{ forloop.index }}"
+                >
+                  {%- assign preview = media.preview_image | default: media -%}
+                  {{ preview | image_url: width: 200 | image_tag: loading: 'lazy', alt: media.alt }}
+                </button>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+
+      {%- if show_digital_tab -%}
+        <div
+          id="panel-digital-{{ section.id }}"
+          role="tabpanel"
+          aria-labelledby="tab-digital-{{ section.id }}"
+          hidden
+        >
+          <div class="media media--wide">
+            {%- if digital_look != blank -%}
+              {%- if digital_look.sources -%}
+                {{ digital_look | video_tag: autoplay: true, loop: true, muted: true, controls: false, playsinline: true }}
+              {%- else -%}
+                {{ digital_look | image_url: width: 1200 | image_tag: loading: 'lazy', alt: digital_caption }}
+              {%- endif -%}
+            {%- else -%}
+              {% render 'plate', variant: 'wire' %}
+            {%- endif -%}
+            <span class="media__tag">
+              {{ digital_caption | default: 'Digital look — avatar preview' }}
+            </span>
+          </div>
+
+          <div class="digital-note">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true">
+              <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/>
+              <path d="M4 7.5l8 4.5 8-4.5M12 12v9"/>
+            </svg>
+            {%- if is_digital -%}
+              <p>
+                <strong>{{ format_note | default: 'Files delivered instantly' }}</strong><br>
+                {%- if product.description != blank -%}
+                  {{ product.description | strip_html | truncatewords: 30 }}
+                {%- endif -%}
+              </p>
+            {%- elsif digital_twin != blank -%}
+              <p>
+                <strong>
+                  {{ digital_twin.title }}
+                  {%- if settings.digital_twin_included %} is included with this garment.{% endif %}
+                </strong><br>
+                {%- if digital_caption != blank -%}
+                  {{ digital_caption }}
+                {%- else -%}
+                  A wearable 3D version of the {{ product.title | downcase }}, rig-ready with fabric presets.
+                  {%- unless settings.digital_twin_included %} Available separately for {{ twin_variant.price | money }}.{% endunless -%}
+                {%- endif -%}
+              </p>
+            {%- else -%}
+              <p>
+                <strong>Digital look</strong><br>
+                {{ digital_caption | default: 'A render of this piece from the digital wardrobe.' }}
+              </p>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="pdp__info">
+      <p class="label">
+        {{ product.type | default: 'Collection' }}
+        &middot;
+        {%- if is_digital %}Digital{%- else %}Physical{%- endif -%}
+      </p>
+
+      <h1>{{ product.title }}</h1>
+
+      <div class="pdp__price">
+        <span class="pdp__price-main" data-price>{{ current_variant.price | money }}</span>
+        <span class="price__compare" data-compare {% unless current_variant.compare_at_price > current_variant.price %}hidden{% endunless %}>
+          {{- current_variant.compare_at_price | money -}}
+        </span>
+        <span>
+          {%- if is_digital -%}
+            {{ 'products.instant_download' | t }}
+          {%- elsif digital_twin != blank and settings.digital_twin_included -%}
+            {{ 'products.includes_digital' | t }}
+          {%- endif -%}
+        </span>
+      </div>
+
+      <div class="pdp__desc">
+        {%- if short_description != blank -%}
+          {{ short_description }}
+        {%- else -%}
+          {{ product.description | strip_html | truncatewords: 42 }}
+        {%- endif -%}
+      </div>
+
+      {%- form 'product', product, id: 'product-form', class: 'product-form', data-product-form: 'true' -%}
+        <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-id>
+        <input type="hidden" name="quantity" value="1">
+
+        {%- unless product.has_only_default_variant -%}
+          {%- for option in product.options_with_values -%}
+            {%- assign option_name_down = option.name | downcase -%}
+            {%- assign is_colour = false -%}
+            {%- if option_name_down contains 'colour' or option_name_down contains 'color' -%}
+              {%- assign is_colour = true -%}
+            {%- endif -%}
+
+            <div class="option variant-group">
+              <div class="option__head">
+                <span class="label">{{ option.name }}</span>
+                <span class="option__value" data-option-value="{{ forloop.index0 }}">
+                  {{- option.selected_value -}}
+                </span>
+              </div>
+
+              <div class="sizes" role="group" aria-label="{{ option.name }}">
+                {%- for value in option.values -%}
+                  {%- assign pressed = false -%}
+                  {%- if value == option.selected_value -%}
+                    {%- assign pressed = true -%}
+                  {%- endif -%}
+
+                  {%- if is_colour and value.swatch.color -%}
+                    <button
+                      class="variant-option variant-option--swatch"
+                      type="button"
+                      data-option-index="{{ forloop.parentloop.index0 }}"
+                      data-value="{{ value | escape }}"
+                      aria-label="{{ value }}"
+                      aria-pressed="{{ pressed }}"
+                      style="background: {{ value.swatch.color }}"
+                    ></button>
+                  {%- else -%}
+                    <button
+                      class="variant-option"
+                      type="button"
+                      data-option-index="{{ forloop.parentloop.index0 }}"
+                      data-value="{{ value | escape }}"
+                      aria-pressed="{{ pressed }}"
+                    >
+                      {{- value -}}
+                    </button>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- endunless -%}
+
+        <div class="pdp__cta">
+          <button
+            class="btn btn--block"
+            type="submit"
+            data-add-to-cart
+            {% unless current_variant.available %}disabled{% endunless %}
+          >
+            <span data-cta-label>
+              {%- if current_variant.available -%}
+                {{ 'products.add_to_cart' | t }}
+              {%- else -%}
+                {{ 'products.sold_out' | t }}
+              {%- endif -%}
+            </span>
+            <span class="btn__arrow" aria-hidden="true">&rarr;</span>
+          </button>
+
+          {%- if digital_twin != blank and is_digital != true -%}
+            <button
+              class="btn btn--ghost btn--block"
+              type="button"
+              data-add-twin="{{ twin_variant.id }}"
+              {% unless twin_variant.available %}disabled{% endunless %}
+            >
+              {{ 'products.buy_digital_only' | t }} — {{ twin_variant.price | money }}
+            </button>
+          {%- elsif is_digital -%}
+            <a class="btn btn--ghost btn--block" href="{{ routes.all_products_collection_url }}">
+              {{ 'cart.continue_shopping' | t }}
+            </a>
+          {%- endif -%}
+        </div>
+
+        <p class="product-form__error" data-form-error role="alert"></p>
+      {%- endform -%}
+
+      <p class="pdp__fineprint">
+        {%- if settings.delivery_note != blank -%}
+          {{ settings.delivery_note }}
+        {%- endif -%}
+      </p>
+
+      <div class="accordion">
+        <details class="acc__item" open>
+          <summary class="acc__trigger">
+            Materials &amp; construction
+            <span class="acc__icon" aria-hidden="true"></span>
+          </summary>
+          <div class="acc__panel--details">
+            {%- if specs != blank -%}
+              {{ specs | metafield_tag }}
+            {%- elsif product.description != blank -%}
+              <div class="rte">{{ product.description }}</div>
+            {%- else -%}
+              <p>{{ product.type }}</p>
+            {%- endif -%}
+          </div>
+        </details>
+
+        {%- if fit != blank -%}
+          <details class="acc__item">
+            <summary class="acc__trigger">
+              Fit
+              <span class="acc__icon" aria-hidden="true"></span>
+            </summary>
+            <div class="acc__panel--details"><p>{{ fit }}</p></div>
+          </details>
+        {%- endif -%}
+
+        {%- if care != blank -%}
+          <details class="acc__item">
+            <summary class="acc__trigger">
+              Care &amp; licence
+              <span class="acc__icon" aria-hidden="true"></span>
+            </summary>
+            <div class="acc__panel--details"><p>{{ care }}</p></div>
+          </details>
+        {%- endif -%}
+
+        <details class="acc__item">
+          <summary class="acc__trigger">
+            Delivery &amp; returns
+            <span class="acc__icon" aria-hidden="true"></span>
+          </summary>
+          <div class="acc__panel--details">
+            <p>{{ settings.delivery_note }}</p>
+            <p>
+              <a class="link-underline" href="/pages/shipping-returns">
+                Read the full policy
+              </a>
+            </p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="application/json" data-variants>
+  [
+  {%- for variant in product.variants -%}
+    {
+      "id": {{ variant.id }},
+      "available": {{ variant.available | json }},
+      "options": {{ variant.options | json }},
+      "price": {{ variant.price | money | json }},
+      "compare": {% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money | json }}{% else %}null{% endif %}
+    }{% unless forloop.last %},{% endunless %}
+  {%- endfor -%}
+  ]
+</script>
+
+{% schema %}
+{
+  "name": "Product"
+}
+{% endschema %}
