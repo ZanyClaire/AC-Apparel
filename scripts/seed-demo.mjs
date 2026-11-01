@@ -77,10 +77,9 @@ const TWIN = {
 const COLLECTION = { handle: 'digital', title: 'Digital Wardrobe' };
 
 const CREATE_PRODUCT = `
-mutation SeedProduct($product: ProductCreateInput!) {
-  productCreate(product: $product) {
+mutation SeedProduct($product: ProductCreateInput!) {    productCreate(product: $product) {
     product { id handle }
-    userErrors { field message code }
+    userErrors { field message }
   }
 }
 `;
@@ -108,7 +107,7 @@ mutation SeedPrice($productId: ID!, $variants: [ProductVariantsBulkInput!]!) {
 const SET_METAFIELDS = `
 mutation SeedMetafields($metafields: [MetafieldsSetInput!]!) {
   metafieldsSet(metafields: $metafields) {
-    userErrors { field message code }
+    userErrors { field message }
   }
 }
 `;
