@@ -129,6 +129,8 @@ Admin → **Products → Collections**. Handles are load-bearing: `digital` is *
 | `trousers` | Automated: product type = `Trousers` | Home collection block 2 | Trousers, shorts |
 | `digital` | Automated: product type = `Digital` | Home digital strip **and** the Digital Wardrobe nav target | Every asset product, including twins |
 
+**Fastest route:** paste [storefront-setup.graphql](storefront-setup.graphql) into [GraphiQL](https://shopify-graphiql-app.shopifycloud.com/) and Run. It creates `digital`, `outerwear` and `trousers` (all manual — the API cannot set automation rules at creation), the three pages the menus link to, and both menus. `frontpage` already exists in every new store. Add the product-type rule later in the collection's edit screen if you want them to fill themselves.
+
 - [ ] All four collections exist with these exact handles.
 - [ ] Each has a title, description and image — collection pages render the description, and the home blocks show the image.
 - [ ] `digital` contains every product with `is_digital_asset = true`.
@@ -172,6 +174,8 @@ Same as 4b. No garment, no twin reference, no shipping. The PDP shows *Asset pre
 ## 5. Navigation
 
 Admin → **Online Store → Navigation**. Menu handles are defaults in the section schemas (`main-menu` for the header, `footer` for the footer and for the header's secondary menu).
+
+[storefront-setup.graphql](storefront-setup.graphql) creates both menus with the links below, as URL-type items (`/collections/digital`, `/pages/about`), so nothing breaks if a page or collection is renamed later — repoint the item then, or swap it for a real PAGE/COLLECTION item in the admin.
 
 **Main menu**
 

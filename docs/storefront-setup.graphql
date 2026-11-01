@@ -1,0 +1,128 @@
+# Creates the collections, pages and menus the theme reads, in one run.
+#
+# How to run:
+#   1. Install Shopify's free GraphiQL app: https://shopify-graphiql-app.shopifycloud.com/
+#   2. Paste this entire document into the app and click Run.
+#   3. Each alias reports its own userErrors. An existing handle answers
+#      "Handle has already been taken" — that definition is already set up, so
+#      it is not a failure. Re-running only re-reports the ones that exist.
+#
+# Why a document rather than the scripts: creating collections, pages and menus
+# needs write_products, write_content and write_online_store_navigation. The
+# app token used by the pre-launch gate is read-only on purpose, and this app
+# runs with your own full access.
+#
+# Navigation uses URL-type items (/collections/digital, /pages/about) rather
+# than resource ids, so menus do not depend on ids created earlier in the same
+# document. Swap them for COLLECTION/PAGE items in the admin if you prefer.
+
+mutation StorefrontSetup {
+  # Hardcoded in theme/sections/digital-wardrobe.liquid — renaming this handle
+  # blanks the home page's digital strip.
+  digital: collectionCreate(
+    collection: {
+      title: "Digital Wardrobe"
+      handle: "digital"
+      descriptionHtml: "<p>The digital twins and standalone assets: rigged meshes, PBR textures and virtual fits, delivered instantly.</p>"
+      sortOrder: MANUAL
+    }
+  ) {
+    collection { id handle title }
+    userErrors { field message }
+  }
+
+  outerwear: collectionCreate(
+    collection: {
+      title: "Outerwear"
+      handle: "outerwear"
+      descriptionHtml: "<p>Coats, jackets and overshirts, each with its digital twin.</p>"
+      sortOrder: MANUAL
+    }
+  ) {
+    collection { id handle title }
+    userErrors { field message }
+  }
+
+  trousers: collectionCreate(
+    collection: {
+      title: "Trousers"
+      handle: "trousers"
+      descriptionHtml: "<p>Trousers, shorts and the pieces cut to sit with them.</p>"
+      sortOrder: MANUAL
+    }
+  ) {
+    collection { id handle title }
+    userErrors { field message }
+  }
+
+  # Templates page.about.json, page.contact.json and page.policies.json ship with
+  # the theme, so each page needs the matching template suffix to get its layout.
+  aboutPage: pageCreate(
+    page: {
+      title: "About"
+      handle: "about"
+      templateSuffix: "about"
+      isPublished: true
+      body: "<p>Aethel &amp; Code makes garments and the digital twins they are built with.</p>"
+    }
+  ) {
+    page { id handle }
+    userErrors { field message code }
+  }
+
+  contactPage: pageCreate(
+    page: {
+      title: "Contact"
+      handle: "contact"
+      templateSuffix: "contact"
+      isPublished: true
+      body: "<p>Questions about an order, a twin or a licence: write to us.</p>"
+    }
+  ) {
+    page { id handle }
+    userErrors { field message code }
+  }
+
+  shippingPage: pageCreate(
+    page: {
+      title: "Shipping & Returns"
+      handle: "shipping-returns"
+      isPublished: true
+      body: "<p>Physical pieces ship tracked. Digital twins are delivered the moment the order is confirmed and are non-returnable.</p>"
+    }
+  ) {
+    page { id handle }
+    userErrors { field message code }
+  }
+
+  # Header section reads main-menu; the footer and the header's secondary menu
+  # read footer. Both handles are schema defaults in the theme.
+  mainMenu: menuCreate(
+    title: "Main menu"
+    handle: "main-menu"
+    items: [
+      { title: "Shop", type: HTTP, url: "/collections/all" }
+      { title: "Outerwear", type: HTTP, url: "/collections/outerwear" }
+      { title: "Trousers", type: HTTP, url: "/collections/trousers" }
+      { title: "Digital Wardrobe", type: HTTP, url: "/collections/digital" }
+      { title: "About", type: HTTP, url: "/pages/about" }
+      { title: "Contact", type: HTTP, url: "/pages/contact" }
+    ]
+  ) {
+    menu { id handle title }
+    userErrors { field message code }
+  }
+
+  footerMenu: menuCreate(
+    title: "Footer menu"
+    handle: "footer"
+    items: [
+      { title: "Shipping & Returns", type: HTTP, url: "/pages/shipping-returns" }
+      { title: "Contact", type: HTTP, url: "/pages/contact" }
+      { title: "Refund policy", type: HTTP, url: "/policies/refund-policy" }
+    ]
+  ) {
+    menu { id handle title }
+    userErrors { field message code }
+  }
+}
