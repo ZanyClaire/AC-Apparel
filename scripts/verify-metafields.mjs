@@ -230,11 +230,11 @@ async function post(url, token, query, variables) {
   return payload.data ?? {};
 }
 
-async function paginate(url, token, query, field) {
+async function paginate(url, token, query, field, fixedVariables = {}) {
   const nodes = [];
   let cursor = null;
   for (let page = 0; page < 50; page += 1) {
-    const data = await post(url, token, query, { first: 100, after: cursor });
+    const data = await post(url, token, query, { ...fixedVariables, first: 100, after: cursor });
     const connection = data[field];
     if (!connection) throw new CheckError(`response had no ${field} field`);
     nodes.push(...(connection.nodes ?? []));
@@ -245,7 +245,12 @@ async function paginate(url, token, query, field) {
 }
 
 export function fetchDefinitions({ url, token }) {
-  return paginate(url, token, DEFINITIONS_QUERY, 'metafieldDefinitions');
+  // ownerType is required by the schema, and the theme only reads custom product
+  // definitions, so both are fixed here rather than left to each caller.
+  return paginate(url, token, DEFINITIONS_QUERY, 'metafieldDefinitions', {
+    ownerType: 'PRODUCT',
+    namespace: 'custom',
+  });
 }
 
 export function fetchProducts({ url, token }) {
