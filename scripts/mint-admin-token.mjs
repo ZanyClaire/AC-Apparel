@@ -79,6 +79,11 @@ export function storeDomain(env) {
   return domain;
 }
 
+function htmlTitle(text) {
+  const match = /<title>([^<]*)<\/title>/i.exec(text);
+  return match ? match[1].trim() : '';
+}
+
 function hintFor(error = '') {
   switch (error) {
     case 'shop_not_permitted':
@@ -90,6 +95,8 @@ function hintFor(error = '') {
     case 'invalid_client':
     case 'invalid_client_credentials':
       return 'the Client ID and Client secret do not belong to the same app, or the secret was rotated after it was copied.';
+    case 'application_cannot_be_found':
+      return 'Shopify does not recognise this Client ID on that store: the app is not installed there, or the Client ID belongs to a different app or organization.';
     case 'invalid_grant':
       return 'the store rejected the grant; confirm the domain is the store the app is installed on.';
     case 'unsupported_grant_type':
@@ -129,18 +136,36 @@ export async function mintToken({ domain, clientId, clientSecret, fetchImpl = fe
   }
 
   const text = await res.text();
-  let payload;
+  let payload = null;
   try {
     payload = JSON.parse(text);
   } catch {
-    throw new MintError(`${url} answered HTTP ${res.status} with non-JSON: ${text.slice(0, 200)}`);
+    payload = null;
   }
 
-  if (!res.ok || payload.error) {
-    const code = payload.error || `http_${res.status}`;
-    const detail = payload.error_description ? ` (${payload.error_description})` : '';
+  if (!res.ok || payload?.error) {
+    // This endpoint reports failures as an HTML page whose title carries the
+    // code, so the page is the only place the reason appears.
+    const title = htmlTitle(text);
+    if (/verifying your connection/i.test(title || text)) {
+      throw new MintError(
+        `${url} answered with a bot-verification page (HTTP ${res.status}) instead of the admin endpoint. ` +
+          'Shopify serves that on storefront and custom domains, and to networks it does not trust, which CI ' +
+          "runners often are. Use the store's own your-store.myshopify.com address.",
+      );
+    }
+    const code =
+      payload?.error || /oauth error\s+([a-z_]+)/i.exec(title)?.[1] || `http_${res.status}`;
+    const detail = payload?.error_description
+      ? ` (${payload.error_description})`
+      : title
+        ? ` (${title})`
+        : ` (${text.replace(/\s+/g, ' ').slice(0, 120)})`;
     throw new MintError(`Shopify refused the grant: ${code}${detail}. Fix: ${hintFor(code)}`);
   }
+
+  if (!payload) throw new MintError(`${url} returned HTTP ${res.status} without JSON.`);
+
   const token = String(payload.access_token ?? '');
   if (!token.startsWith('shpat_')) {
     throw new MintError(
@@ -178,6 +203,11 @@ async function main() {
   try {
     const env = process.env;
     const domain = storeDomain(env);
+    if (!domain.endsWith('.myshopify.com')) {
+      console.error(
+        `note: ${domain} is not a *.myshopify.com address; the Admin API is only reliable on the store's own myshopify domain.`,
+      );
+    }
     const clientId = readClean(env, 'SHOPIFY_CLIENT_ID');
     const clientSecret = readClean(env, 'SHOPIFY_CLIENT_SECRET');
 
