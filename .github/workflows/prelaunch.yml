@@ -29,19 +29,30 @@ jobs:
       - name: Check credentials are configured
         env:
           STORE: ${{ secrets.SHOPIFY_STORE_DOMAIN }}
-          TOKEN: ${{ secrets.SHOPIFY_ADMIN_TOKEN }}
+          CLIENT_ID: ${{ secrets.SHOPIFY_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.SHOPIFY_CLIENT_SECRET }}
         run: |
           missing=""
           if [ -z "$STORE" ]; then missing="$missing SHOPIFY_STORE_DOMAIN"; fi
-          if [ -z "$TOKEN" ]; then missing="$missing SHOPIFY_ADMIN_TOKEN"; fi
+          if [ -z "$CLIENT_ID" ]; then missing="$missing SHOPIFY_CLIENT_ID"; fi
+          if [ -z "$CLIENT_SECRET" ]; then missing="$missing SHOPIFY_CLIENT_SECRET"; fi
           if [ -n "$missing" ]; then
             echo "::error::Missing repository secret(s):$missing. Add them under Settings > Secrets and variables > Actions."
             exit 1
           fi
-          echo "Shopify credentials present."
+          echo "Shopify app credentials present."
+
+      # Shopify issues no long-lived token to copy for a Dev Dashboard app, so
+      # the app's own credentials are traded for one here. The token lives for
+      # 24 hours and is masked in the log.
+      - name: Mint Admin API token
+        env:
+          SHOPIFY_STORE_DOMAIN: ${{ secrets.SHOPIFY_STORE_DOMAIN }}
+          SHOPIFY_CLIENT_ID: ${{ secrets.SHOPIFY_CLIENT_ID }}
+          SHOPIFY_CLIENT_SECRET: ${{ secrets.SHOPIFY_CLIENT_SECRET }}
+        run: node scripts/mint-admin-token.mjs
 
       - name: Run pre-launch gate
         env:
           SHOPIFY_STORE_DOMAIN: ${{ secrets.SHOPIFY_STORE_DOMAIN }}
-          SHOPIFY_ADMIN_TOKEN: ${{ secrets.SHOPIFY_ADMIN_TOKEN }}
         run: node scripts/prelaunch.mjs

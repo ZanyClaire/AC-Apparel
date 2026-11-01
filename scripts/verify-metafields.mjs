@@ -105,13 +105,93 @@ const LIQUID_ACCESS = new Set(['PUBLIC_READ', 'LEGACY_LIQUID_ONLY']);
 
 class CheckError extends Error {}
 
+/** First character a request header cannot carry: header values must be printable ASCII. */
+function headerOffender(value) {
+  for (let index = 0; index < value.length; index += 1) {
+    const code = value.charCodeAt(index);
+    if (code < 0x20 || code > 0x7e) return { index, code };
+  }
+  return null;
+}
+
+function describeOffender({ index, code }) {
+  let what;
+  if (code === 0x2026) {
+    what = 'an ellipsis (…), the mark left when a value is copied from a truncated or masked display';
+  } else if (code === 0x20 || (code >= 0x09 && code <= 0x0d)) {
+    what = 'whitespace';
+  } else {
+    what = `a character outside ASCII (U+${code.toString(16).toUpperCase().padStart(4, '0')})`;
+  }
+  return `${what} at position ${index}`;
+}
+
+/**
+ * Validating here turns Node's opaque "Cannot convert argument to a ByteString"
+ * into a message that names the variable and the bad character. Node rejects the
+ * whole request when a header value holds anything above 0xFF, so a single stray
+ * glyph reads as an unreachable store.
+ */
+export function adminToken(env) {
+  const raw = env.SHOPIFY_ADMIN_TOKEN ?? '';
+  const token = raw.trim();
+
+  if (!token) {
+    if (env.SHOPIFY_ADMIN_API_URL) return '';
+    throw new CheckError("SHOPIFY_ADMIN_TOKEN is not set: export the app's Admin API access token (shpat_...)");
+  }
+
+  const offender = headerOffender(token);
+  if (offender) {
+    throw new CheckError(
+      `SHOPIFY_ADMIN_TOKEN contains ${describeOffender(offender)}, so it cannot be sent as a header. ` +
+        'Re-copy the whole token from the source rather than from a shortened display.',
+    );
+  }
+
+  if (token.includes('...')) {
+    throw new CheckError('SHOPIFY_ADMIN_TOKEN contains "...", so it looks truncated. Re-copy the full token.');
+  }
+
+  // A custom endpoint is a local mock, which sets its own token shape.
+  if (env.SHOPIFY_ADMIN_API_URL) return token;
+
+  if (token.startsWith('shps_')) {
+    throw new CheckError(
+      'SHOPIFY_ADMIN_TOKEN holds a Client secret (shps_...), not an Admin API access token. ' +
+        'A client secret only works after it is exchanged at /admin/oauth/access_token for a shpat_ token.',
+    );
+  }
+
+  if (!token.startsWith('shpat_') && !token.startsWith('shppa_')) {
+    throw new CheckError(
+      'SHOPIFY_ADMIN_TOKEN does not start with shpat_ (Admin API access token) or shppa_ (delegate token), ' +
+        'so Shopify will reject it. It never looks like a client ID or domain.',
+    );
+  }
+
+  return token;
+}
+
 function endpoint(env) {
-  if (env.SHOPIFY_ADMIN_API_URL) return env.SHOPIFY_ADMIN_API_URL;
+  if (env.SHOPIFY_ADMIN_API_URL) {
+    const offender = headerOffender(env.SHOPIFY_ADMIN_API_URL);
+    if (offender) {
+      throw new CheckError(
+        `SHOPIFY_ADMIN_API_URL contains ${describeOffender(offender)}, so it cannot be requested.`,
+      );
+    }
+    return env.SHOPIFY_ADMIN_API_URL;
+  }
   const raw = env.SHOPIFY_STORE_DOMAIN;
   if (!raw) return null;
-  const domain = raw.replace(/^https?:\/\//, '').replace(/\/+$/, '');
+  const domain = raw.trim().replace(/^https?:\/\//, '').replace(/\/+$/, '');
   if (!/^[a-z0-9][a-z0-9.-]*\.[a-z]{2,}$/i.test(domain)) {
-    throw new CheckError(`SHOPIFY_STORE_DOMAIN does not look like a store domain: ${raw}`);
+    const offender = headerOffender(domain);
+    const reason = offender
+      ? `it contains ${describeOffender(offender)}`
+      : 'it is not a domain like your-store.myshopify.com';
+    throw new CheckError(`SHOPIFY_STORE_DOMAIN is unusable because ${reason}: ${domain}`);
   }
   const version = env.SHOPIFY_API_VERSION || '2026-10';
   return `https://${domain}/admin/api/${version}/graphql.json`;
@@ -367,12 +447,9 @@ async function main() {
         'or SHOPIFY_ADMIN_API_URL for a custom endpoint',
     );
   }
-  if (!env.SHOPIFY_ADMIN_TOKEN && !env.SHOPIFY_ADMIN_API_URL) {
-    throw new CheckError('SHOPIFY_ADMIN_TOKEN is not set');
-  }
+  const token = adminToken(env);
 
   const store = env.SHOPIFY_STORE_DOMAIN || url;
-  const token = env.SHOPIFY_ADMIN_TOKEN ?? '';
   console.log(`Store: ${store}`);
 
   const definitions = await fetchDefinitions({ url, token });
