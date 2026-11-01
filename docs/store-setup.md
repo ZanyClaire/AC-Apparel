@@ -30,7 +30,17 @@ Admin → **Settings → Custom data → Products → Add definition**. The name
 | `fit` | Multi-line text | The *Fit* accordion. The accordion is hidden entirely when empty. | Optional |
 | `care` | Multi-line text | The *Care & licence* accordion. Hidden when empty. | Optional |
 
-**Create all ten in one go.** [metafield-definitions.graphql](metafield-definitions.graphql) contains one `metafieldDefinitionCreate` call per definition above. Install Shopify's free [GraphiQL app](https://shopify-graphiql-app.shopifycloud.com/), paste the whole document, and click Run — each alias reports its own `userErrors`, and re-running only returns `TAKEN` for definitions that already exist. There is no native CSV import for definitions: Shopify's product CSV can only write values *after* a definition exists, and bulk-import apps require the definitions first too. The manual route is Settings → Custom data → Products → Add definition, ten times.
+**Create all ten in one go.** Run the script with app credentials that carry the `write_products` scope:
+
+```bash
+SHOPIFY_STORE_DOMAIN=<handle>.myshopify.com \
+SHOPIFY_CLIENT_ID=... SHOPIFY_CLIENT_SECRET=shps_... \
+node scripts/define-metafields.mjs
+```
+
+It creates whichever definitions are missing, reports `exists` for the ones already there, and is safe to re-run after fixing a type. `--dry-run` lists what it would create without touching the store. Read-only credentials are rejected up front with a message naming the missing scope, so nothing is half-written.
+
+**Or paste it by hand.** [metafield-definitions.graphql](metafield-definitions.graphql) contains one `metafieldDefinitionCreate` call per definition above. Install Shopify's free [GraphiQL app](https://shopify-graphiql-app.shopifycloud.com/), paste the whole document, and click Run — each alias reports its own `userErrors`, and re-running only returns `TAKEN` for definitions that already exist. There is no native CSV import for definitions: Shopify's product CSV can only write values *after* a definition exists, and bulk-import apps require the definitions first too. The manual route is Settings → Custom data → Products → Add definition, ten times.
 
 Checklist:
 

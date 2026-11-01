@@ -57,6 +57,8 @@ The full pre-launch gate is `node scripts/prelaunch.mjs`: the theme checks above
 
 CI runs the same gate on every push ([.github/workflows/prelaunch.yml](.github/workflows/prelaunch.yml)). Shopify issues no long-lived token to copy for an app created in the Dev Dashboard, so the workflow holds `SHOPIFY_STORE_DOMAIN`, `SHOPIFY_CLIENT_ID` and `SHOPIFY_CLIENT_SECRET` as repository secrets under Settings → Secrets and variables → Actions and mints a token per run — an existing `SHOPIFY_ADMIN_TOKEN` secret is used instead when present. It fails with a named error if the store and one of those credential sets are missing, rather than reporting an unverified pass.
 
+The ten metafield definitions the theme reads can be created from the same credentials with `node scripts/define-metafields.mjs` — it needs `write_products`, skips definitions that already exist, and `--dry-run` lists what it would create.
+
 Pull requests run a lighter workflow, [.github/workflows/theme-check.yml](.github/workflows/theme-check.yml), which executes only the static theme checks and references no secrets at all — so a contributor without store access, including one opening a PR from a fork, still gets a pass or fail on their change.
 
 The static pages in the repository root remain the visual reference and a quick way to review interactions without a Shopify store.
