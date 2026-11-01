@@ -1,0 +1,26 @@
+<div class="wrap simple-page" style="max-width:520px">
+  <h1>Activate your account</h1>
+  <p class="muted">Choose a password to finish setting up your account.</p>
+
+  {%- form 'activate_customer_password' -%}
+    {%- if form.errors -%}
+      <p class="form-message form-message--error">{{ form.errors | default_errors }}</p>
+    {%- endif -%}
+
+    <div class="form-grid" style="grid-template-columns:1fr">
+      <div class="field">
+        <label for="ActivatePassword">Password</label>
+        <input id="ActivatePassword" type="password" name="customer[password]" autocomplete="new-password" required>
+      </div>
+      <div class="field">
+        <label for="ActivateConfirmation">Confirm password</label>
+        <input id="ActivateConfirmation" type="password" name="customer[password_confirmation]" autocomplete="new-password" required>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:1rem;margin-top:1.25rem">
+      <button class="btn" type="submit">Activate</button>
+      <button class="btn btn--ghost" type="submit" name="decline">Decline</button>
+    </div>
+  {%- endform -%}
+</div>

@@ -1,0 +1,40 @@
+{
+  "sections": {
+    "hero": {
+      "type": "page-hero",
+      "settings": {
+        "heading": "Write to the studio.",
+        "text": "<p>Questions about fit, an order, digital licences or a collaboration all land in the same inbox.</p>"
+      }
+    },
+    "form": {
+      "type": "contact-form",
+      "blocks": {
+        "studio": {
+          "type": "detail",
+          "settings": {
+            "heading": "Studio",
+            "text": "<p>Iloilo City<br>Philippines</p>"
+          }
+        },
+        "email": {
+          "type": "detail",
+          "settings": {
+            "heading": "Email &amp; telephone",
+            "text": "<p><a href=\"mailto:studio@aethelandcode.com\">studio@aethelandcode.com</a><br><a href=\"tel:+639705052279\">+63 970 505 2279</a><br>Mon–Fri, 10:00–18:00 PHT (UTC+8)</p>"
+          }
+        },
+        "orders": {
+          "type": "detail",
+          "settings": {
+            "heading": "Digital delivery",
+            "text": "<p>Digital looks are emailed automatically. If nothing arrives within ten minutes, write to us with your order number.</p>"
+          }
+        }
+      },
+      "block_order": ["studio", "email", "orders"],
+      "settings": {}
+    }
+  },
+  "order": ["hero", "form"]
+}

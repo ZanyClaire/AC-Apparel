@@ -1,0 +1,13 @@
+<div class="wrap page-head">
+  <h1>Collections</h1>
+</div>
+
+<div class="wrap" style="padding-bottom:var(--section)">
+  <div class="list-collections">
+    {%- for collection in collections -%}
+      {%- unless collection.handle == 'frontpage' -%}
+        {%- render 'collection-card', card_collection: collection, art: 'fog' -%}
+      {%- endunless -%}
+    {%- endfor -%}
+  </div>
+</div>

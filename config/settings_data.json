@@ -1,0 +1,17 @@
+{
+  "current": {
+    "color_background": "#F4F1EA",
+    "color_text": "#1A1B18",
+    "color_surface": "#EBE7DD",
+    "color_accent": "#1F3A2E",
+    "heading_font": "Newsreader",
+    "body_font": "Inter",
+    "page_width": 1560,
+    "cart_type": "drawer",
+    "free_shipping_threshold": 250,
+    "cart_note": "<p>Digital looks are emailed the moment your order is confirmed.</p>",
+    "enable_digital_look": true,
+    "digital_twin_included": true,
+    "delivery_note": "Free shipping over £250. The digital look is emailed with your order confirmation."
+  }
+}

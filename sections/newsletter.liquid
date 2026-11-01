@@ -1,0 +1,60 @@
+<section class="section section--tight" aria-labelledby="newsletter-title-{{ section.id }}">
+  <div class="wrap newsletter">
+    <div>
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="label">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      <h2 id="newsletter-title-{{ section.id }}">{{ section.settings.heading }}</h2>
+    </div>
+
+    <div>
+      {%- form 'customer', class: 'newsletter-form' -%}
+        {%- if form.posted_successfully? -%}
+          <p class="newsletter__msg" role="status">{{ 'newsletter.success' | t }}</p>
+        {%- else -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <label class="sr-only" for="newsletter-email-{{ section.id }}" style="position:absolute;left:-9999px">
+            {{ 'newsletter.placeholder' | t }}
+          </label>
+          <input
+            id="newsletter-email-{{ section.id }}"
+            type="email"
+            name="contact[email]"
+            placeholder="{{ 'newsletter.placeholder' | t }}"
+            autocomplete="email"
+            required
+          >
+          <button type="submit">{{ 'newsletter.submit' | t }} &rarr;</button>
+        {%- endif -%}
+
+        {%- if form.errors -%}
+          <p class="newsletter__msg" role="alert" style="color:#9c3d2f">
+            {{ form.errors.messages.email }}
+          </p>
+        {%- endif -%}
+      {%- endform -%}
+
+      {%- if section.settings.note != blank -%}
+        <p class="form-note">{{ section.settings.note }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Correspondence" },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Occasional letters. New work, field notes, no noise."
+    },
+    { "type": "text", "id": "note", "label": "Note" },
+    { "type": "header", "content": "Newsletter" }
+  ],
+  "presets": [{ "name": "Newsletter" }]
+}
+{% endschema %}

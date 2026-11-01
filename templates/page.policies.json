@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "hero": {
+      "type": "page-hero",
+      "settings": {
+        "heading": "The plain version.",
+        "text": "<p>Rates, timings and the one rule that matters for digital pieces: they are delivered instantly, by email.</p>"
+      }
+    },
+    "main": { "type": "main-page", "settings": { "show_hero": false } }
+  },
+  "order": ["hero", "main"]
+}

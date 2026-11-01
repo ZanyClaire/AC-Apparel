@@ -1,0 +1,144 @@
+<section
+  class="hero"
+  style="min-height: min({{ section.settings.height }}svh, 900px)"
+  aria-labelledby="hero-title-{{ section.id }}"
+>
+  {%- if section.settings.video != blank -%}
+    <div class="hero__media">
+      {{
+        section.settings.video
+        | video_tag:
+          autoplay: true,
+          loop: true,
+          muted: true,
+          controls: false,
+          playsinline: true,
+          class: 'hero__video'
+      }}
+    </div>
+  {%- elsif section.settings.image != blank -%}
+    <div class="hero__media">
+      {{
+        section.settings.image
+        | image_url: width: 2400
+        | image_tag:
+          loading: 'eager',
+          fetchpriority: 'high',
+          widths: '600, 900, 1200, 1800, 2400',
+          sizes: '100vw',
+          alt: section.settings.image.alt
+      }}
+    </div>
+  {%- else -%}
+    {% render 'plate', variant: 'ridge' %}
+  {%- endif -%}
+
+  <div class="wrap hero__inner">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="hero__eyebrow">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+
+    <h1 id="hero-title-{{ section.id }}">{{ section.settings.heading }}</h1>
+
+    <div class="hero__foot">
+      {%- if section.settings.text != blank -%}
+        <p>{{ section.settings.text }}</p>
+      {%- endif -%}
+
+      {%- if section.blocks.size > 0 -%}
+        <div class="hero__actions">
+          {%- for block in section.blocks -%}
+            <a
+              class="btn {% if block.settings.style == 'outline' %}btn--outline-light{% else %}btn--light{% endif %}"
+              href="{{ block.settings.link | default: routes.all_products_collection_url }}"
+              {{ block.shopify_attributes }}
+            >
+              {{ block.settings.label }}
+              {%- unless block.settings.style == 'outline' -%}
+                <span class="btn__arrow" aria-hidden="true">&rarr;</span>
+              {%- endunless -%}
+            </a>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero",
+  "max_blocks": 2,
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "info": "Falls back to generated terrain art when empty."
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Background video",
+      "info": "Takes priority over the image. Keep it under 10 seconds and muted."
+    },
+    {
+      "type": "range",
+      "id": "height",
+      "label": "Height",
+      "min": 55,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 88
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Autumn—Winter 26 · Terrain Study"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Clothing for the ground you <em>stand on</em>."
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Supporting text",
+      "default": "Wool, waxed cotton and recycled shell, cut to work. Every garment carries a digital twin for the space you occupy next."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "button",
+      "name": "Button",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "Explore the collection" },
+        { "type": "url", "id": "link", "label": "Link" },
+        {
+          "type": "select",
+          "id": "style",
+          "label": "Style",
+          "options": [
+            { "value": "solid", "label": "Solid" },
+            { "value": "outline", "label": "Outline" }
+          ],
+          "default": "solid"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero",
+      "blocks": [
+        { "type": "button", "settings": { "label": "Explore the collection", "style": "solid" } },
+        { "type": "button", "settings": { "label": "The digital wardrobe", "style": "outline" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

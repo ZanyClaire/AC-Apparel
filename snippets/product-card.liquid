@@ -1,0 +1,62 @@
+{%- comment -%}
+  Expects `card_product` (product object) and optionally `art` (plate variant).
+{%- endcomment -%}
+{%- assign product = card_product -%}
+{%- assign digital_twin = product.metafields.custom.digital_twin.value -%}
+{%- assign is_digital = product.metafields.custom.is_digital_asset.value -%}
+{%- assign art_variant = art | default: 'studio' -%}
+
+<a
+  class="card"
+  href="{{ product.url }}"
+  data-product-type="{{ product.type | escape }}"
+  data-product-price="{{ product.price }}"
+>
+  <div class="media">
+    {%- if product.featured_image -%}
+      <div class="media--image" style="position:absolute;inset:0">
+        {{
+          product.featured_image
+          | image_url: width: 900
+          | image_tag:
+            loading: 'lazy',
+            widths: '300, 450, 600, 900',
+            sizes: '(min-width: 900px) 30vw, 45vw',
+            alt: product.featured_image.alt
+        }}
+      </div>
+    {%- else -%}
+      {% render 'plate', variant: art_variant %}
+    {%- endif -%}
+
+    {%- if is_digital -%}
+      <span class="media__tag">{{ 'products.instant_download' | t }}</span>
+    {%- elsif digital_twin != blank -%}
+      <span class="media__tag">{{ 'products.includes_digital' | t }}</span>
+    {%- elsif product.available == false -%}
+      <span class="media__tag">{{ 'products.sold_out' | t }}</span>
+    {%- endif -%}
+  </div>
+
+  <div class="card__info">
+    <span class="card__name">{{ product.title }}</span>
+    <span class="card__price">
+      {%- if product.price_varies -%}
+        {{ 'From' }} {{ product.price_min | money }}
+      {%- else -%}
+        {{ product.price | money }}
+      {%- endif -%}
+    </span>
+  </div>
+
+  <div class="card__meta">
+    <span>
+      {%- if product.metafields.custom.material.value != blank -%}
+        {{ product.metafields.custom.material.value }}
+      {%- else -%}
+        {{ product.type | default: product.vendor }}
+      {%- endif -%}
+    </span>
+    <span>{{ product.type }}</span>
+  </div>
+</a>

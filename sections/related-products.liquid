@@ -1,0 +1,35 @@
+{%- assign source_collection = product.collections.first -%}
+
+{%- if source_collection and source_collection.products.size > 1 -%}
+  <section class="section section--tight related" aria-labelledby="related-title-{{ section.id }}">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="related-title-{{ section.id }}" style="font-size:var(--step-2)">{{ section.settings.heading }}</h2>
+        <a class="link-underline" href="{{ source_collection.url }}">{{ section.settings.link_label }}</a>
+      </div>
+
+      <div class="grid-products">
+      {%- assign shown = 0 -%}
+      {%- for related_product in source_collection.products -%}
+        {%- if related_product.id != product.id and shown < 3 -%}
+          {%- assign art = 'studio' -%}
+          {%- if shown == 1 -%}{%- assign art = 'dune' -%}{%- endif -%}
+          {%- if shown == 2 -%}{%- assign art = 'ridge' -%}{%- endif -%}
+          {%- render 'product-card', card_product: related_product, art: art -%}
+          {%- assign shown = shown | plus: 1 -%}
+        {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Related products",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Continue" },
+    { "type": "text", "id": "link_label", "label": "Link label", "default": "All pieces" }
+  ]
+}
+{% endschema %}

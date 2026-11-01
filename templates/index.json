@@ -1,0 +1,78 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "blocks": {
+        "button_1": {
+          "type": "button",
+          "settings": { "label": "Explore the collection", "style": "solid" }
+        },
+        "button_2": {
+          "type": "button",
+          "settings": { "label": "The digital wardrobe", "style": "outline" }
+        }
+      },
+      "block_order": ["button_1", "button_2"],
+      "settings": {}
+    },
+    "pillars": {
+      "type": "pillars",
+      "blocks": {
+        "pillar_1": {
+          "type": "pillar",
+          "settings": {
+            "heading": "Quiet luxury craft",
+            "text": "<p>Italian wool, British wax, Japanese ripstop. Finished in small runs by makers we visit, with seams you can inspect.</p>"
+          }
+        },
+        "pillar_2": {
+          "type": "pillar",
+          "settings": {
+            "heading": "Function, not costume",
+            "text": "<p>Weatherproofing where it earns its place. Articulated sleeves, deep pockets, fabric that improves with use.</p>"
+          }
+        },
+        "pillar_3": {
+          "type": "pillar",
+          "settings": {
+            "heading": "Digital wardrobe included",
+            "text": "<p>A rig-ready 3D asset of every garment, delivered with the physical piece. For the version of you that lives on screen.</p>"
+          }
+        }
+      },
+      "block_order": ["pillar_1", "pillar_2", "pillar_3"],
+      "settings": {}
+    },
+    "collections": {
+      "type": "collections-feature",
+      "blocks": {
+        "collection_1": { "type": "collection", "settings": { "collection": "outerwear" } },
+        "collection_2": { "type": "collection", "settings": { "collection": "trousers" } },
+        "collection_3": { "type": "collection", "settings": { "collection": "digital" } }
+      },
+      "block_order": ["collection_1", "collection_2", "collection_3"],
+      "settings": {}
+    },
+    "featured": {
+      "type": "featured-products",
+      "settings": { "collection": "frontpage", "limit": 3 }
+    },
+    "phygital": {
+      "type": "phygital-split",
+      "settings": {}
+    },
+    "digital": {
+      "type": "digital-wardrobe",
+      "settings": { "collection": "digital" }
+    },
+    "quote": {
+      "type": "quote",
+      "settings": {}
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {}
+    }
+  },
+  "order": ["hero", "pillars", "collections", "featured", "phygital", "digital", "quote", "newsletter"]
+}

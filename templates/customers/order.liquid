@@ -1,0 +1,32 @@
+<div class="wrap simple-page">
+  <p class="label">Order {{ order.created_at | date: '%d %B %Y' }}</p>
+  <h1>{{ order.name }}</h1>
+  <p class="muted">{{ order.financial_status_label }} &middot; {{ order.fulfillment_status_label }}</p>
+
+  <table class="rate-table" style="margin-top:2rem">
+    <thead>
+      <tr><th scope="col">Item</th><th scope="col">Quantity</th><th scope="col">Total</th></tr>
+    </thead>
+    <tbody>
+      {%- for line_item in order.line_items -%}
+        <tr>
+          <td>{{ line_item.title }}{% if line_item.variant.title != 'Default Title' %}<br><span class="muted" style="font-size:.8125rem">{{ line_item.variant.title }}</span>{% endif %}</td>
+          <td>{{ line_item.quantity }}</td>
+          <td>{{ line_item.final_line_price | money }}</td>
+        </tr>
+      {%- endfor -%}
+    </tbody>
+  </table>
+
+  <div class="cart-summary" style="position:static;margin-top:1.5rem;max-width:420px">
+    <div class="cart-summary__row"><span>Subtotal</span><span>{{ order.subtotal_price | money }}</span></div>
+    <div class="cart-summary__row"><span>Shipping</span><span>{{ order.shipping_price | money }}</span></div>
+    {%- if order.tax_price > 0 -%}
+      <div class="cart-summary__row"><span>Tax</span><span>{{ order.tax_price | money }}</span></div>
+    {%- endif -%}
+    <div class="cart-summary__row cart-summary__total"><span>Total</span><strong>{{ order.total_price | money }}</strong></div>
+  </div>
+
+  <h2 style="margin-top:2.5rem;font-size:var(--step-2)">Delivered to</h2>
+  <p class="muted">{{ order.shipping_address | format_address }}</p>
+</div>

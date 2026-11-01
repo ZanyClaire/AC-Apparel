@@ -1,0 +1,36 @@
+<div class="wrap page-head">
+  <h1>Search</h1>
+  <form action="{{ routes.search_url }}" method="get" role="search" style="display:flex;gap:.5rem;margin-top:1.5rem;max-width:520px">
+    <label for="SearchInput" style="position:absolute;left:-9999px">Search</label>
+    <input id="SearchInput" type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search products" style="flex:1;padding:.8rem .9rem;border:1px solid var(--line-strong);background:transparent;font:inherit">
+    <button class="btn" type="submit">Search</button>
+  </form>
+</div>
+
+{%- if search.performed -%}
+  <div class="wrap" style="padding-bottom:var(--section)">
+    {%- paginate search.results by 12 -%}
+      {%- if search.results_count > 0 -%}
+        <p class="label">{{ search.results_count }} results for &ldquo;{{ search.terms }}&rdquo;</p>
+        <div class="grid-products">
+          {%- for item in search.results -%}
+            {%- if item.object_type == 'product' -%}
+              {%- render 'product-card', card_product: item -%}
+            {%- else -%}
+              <a class="card" href="{{ item.url }}">
+                <div class="media">{% render 'plate', variant: 'dune' %}</div>
+                <div class="card__info">
+                  <span class="card__name">{{ item.title }}</span>
+                  <span class="card__price">{{ item.object_type | capitalize }}</span>
+                </div>
+              </a>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        {%- render 'pagination', paginate: paginate -%}
+      {%- else -%}
+        <p class="empty-state">Nothing matched that search.</p>
+      {%- endif -%}
+    {%- endpaginate -%}
+  </div>
+{%- endif -%}

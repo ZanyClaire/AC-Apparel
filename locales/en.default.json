@@ -1,0 +1,71 @@
+{
+  "general": {
+    "skip_to_content": "Skip to content",
+    "page": "Page",
+    "menu": "Menu",
+    "close": "Close",
+    "cart": "Cart",
+    "search": "Search",
+    "home": "Home",
+    "shop": "Shop",
+    "continue": "Continue"
+  },
+  "products": {
+    "add_to_cart": "Add to cart",
+    "sold_out": "Sold out",
+    "unavailable": "Unavailable",
+    "buy_digital_only": "Buy digital only",
+    "includes_digital": "Digital look included",
+    "digital_look": "Digital Look",
+    "images": "Images",
+    "instant_download": "Instant download",
+    "choose_options": "Choose options",
+    "quantity": "Quantity",
+    "size": "Size",
+    "colour": "Colour",
+    "digital_only": "Digital"
+  },
+  "cart": {
+    "title": "Your cart",
+    "empty": "Nothing selected",
+    "empty_body": "Every garment ships with its digital twin. Add a piece, or browse the digital wardrobe on its own.",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "shipping_at_checkout": "Calculated at checkout",
+    "free": "Free",
+    "total": "Total",
+    "checkout": "Checkout",
+    "remove": "Remove",
+    "view_cart": "View cart",
+    "continue_shopping": "Continue shopping",
+    "note": "Taxes calculated at checkout.",
+    "added": "Added to cart",
+    "added_digital": "Digital asset added",
+    "shipping_free": "Shipping (free)",
+    "free_shipping_remaining": "You are {{ amount }} from free shipping.",
+    "free_shipping_earned": "Free shipping unlocked."
+  },
+  "newsletter": {
+    "heading": "Occasional letters. New work, field notes, no noise.",
+    "placeholder": "Email address",
+    "submit": "Subscribe",
+    "success": "Thank you — you are on the list.",
+    "error": "Enter a valid email address."
+  },
+  "contact": {
+    "name": "Name",
+    "email": "Email",
+    "subject": "Subject",
+    "message": "Message",
+    "send": "Send message",
+    "success": "Thank you — your message is with the studio.",
+    "note": "We reply within two working days."
+  },
+  "collections": {
+    "all": "All",
+    "filters": "Filter",
+    "sort": "Sort by",
+    "pieces": "pieces",
+    "empty": "No pieces in this category yet."
+  }
+}

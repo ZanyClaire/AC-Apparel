@@ -1,0 +1,121 @@
+{%- assign free_shipping_cents = settings.free_shipping_threshold | times: 100 -%}
+
+<div class="wrap page-head">
+  <h1>{{ 'cart.title' | t }}</h1>
+</div>
+
+<div class="wrap" style="padding-bottom:var(--section)">
+  {%- if cart.item_count == 0 -%}
+    <div class="cart-empty">
+      <p class="label">{{ 'cart.empty' | t }}</p>
+      <p class="muted" style="max-width:36ch;margin-inline:auto">{{ 'cart.empty_body' | t }}</p>
+      <p style="margin-top:1.5rem">
+        <a class="btn" href="{{ routes.all_products_collection_url }}">{{ 'cart.continue_shopping' | t }}</a>
+      </p>
+    </div>
+  {%- else -%}
+    <div class="cart-page">
+      <div>
+        {%- for item in cart.items -%}
+          {%- assign is_digital = false -%}
+          {%- if item.product.metafields.custom.is_digital_asset.value == true -%}
+            {%- assign is_digital = true -%}
+          {%- endif -%}
+
+          <div class="cart-line">
+            <a class="cart-line__media" href="{{ item.url }}">
+              {%- if item.image -%}
+                {{ item.image | image_url: width: 240 | image_tag: loading: 'lazy', alt: item.title }}
+              {%- else -%}
+                {% render 'plate', variant: 'studio' %}
+              {%- endif -%}
+            </a>
+
+            <div>
+              <a class="cart-line__name" href="{{ item.url }}">{{ item.product.title }}</a>
+              <p class="cart-line__meta">
+                {%- if is_digital -%}
+                  {{ 'products.instant_download' | t }}
+                {%- else -%}
+                  {{ item.variant.title }}
+                  {%- if item.properties.Delivery %} &middot; {{ item.properties.Delivery }}{% endif -%}
+                {%- endif -%}
+              </p>
+
+              {%- unless is_digital -%}
+                <div class="cart-line__actions">
+                  <div class="qty">
+                    <button type="button" data-cart-page-qty="{{ item.key }}" data-quantity="{{ item.quantity | minus: 1 }}" aria-label="Decrease quantity">&minus;</button>
+                    <span>{{ item.quantity }}</span>
+                    <button type="button" data-cart-page-qty="{{ item.key }}" data-quantity="{{ item.quantity | plus: 1 }}" aria-label="Increase quantity">+</button>
+                  </div>
+                  <button class="line-item__remove" type="button" data-cart-page-remove="{{ item.key }}">
+                    {{ 'cart.remove' | t }}
+                  </button>
+                </div>
+              {%- else -%}
+                <div class="cart-line__actions">
+                  <span class="badge badge--digital">{{ 'products.digital_only' | t }}</span>
+                  <button class="line-item__remove" type="button" data-cart-page-remove="{{ item.key }}">
+                    {{ 'cart.remove' | t }}
+                  </button>
+                </div>
+              {%- endunless -%}
+            </div>
+
+            <div class="cart-line__price">{{ item.final_line_price | money }}</div>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      <aside class="cart-summary">
+        {%- if free_shipping_cents > 0 -%}
+          {%- assign remaining = free_shipping_cents | minus: cart.total_price -%}
+          <div class="free-ship">
+            <p class="free-ship__label">
+              {%- if remaining > 0 -%}
+                {%- assign remaining_money = remaining | money -%}
+                {{ 'cart.free_shipping_remaining' | t: amount: remaining_money }}
+              {%- else -%}
+                {{ 'cart.free_shipping_earned' | t }}
+              {%- endif -%}
+            </p>
+            <div class="free-ship__track">
+              <span
+                class="free-ship__fill"
+                style="width: {{ cart.total_price | times: 100.0 | divided_by: free_shipping_cents | at_most: 100 }}%"
+              ></span>
+            </div>
+          </div>
+        {%- endif -%}
+
+        <div class="cart-summary__row">
+          <span>{{ 'cart.subtotal' | t }}</span>
+          <span>{{ cart.items_subtotal_price | money }}</span>
+        </div>
+        <div class="cart-summary__row">
+          <span>{{ 'cart.shipping' | t }}</span>
+          <span>{{ 'cart.shipping_at_checkout' | t }}</span>
+        </div>
+        <div class="cart-summary__row cart-summary__total">
+          <span>{{ 'cart.total' | t }}</span>
+          <strong>{{ cart.total_price | money }}</strong>
+        </div>
+
+        <form action="{{ routes.cart_url }}" method="post" style="margin-top:1.25rem">
+          <button class="btn btn--block" type="submit" name="checkout">{{ 'cart.checkout' | t }}</button>
+        </form>
+
+        {%- if settings.cart_note != blank -%}
+          <div class="drawer__note">{{ settings.cart_note }}</div>
+        {%- endif -%}
+      </aside>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Cart"
+}
+{% endschema %}
