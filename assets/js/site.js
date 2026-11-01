@@ -169,7 +169,7 @@ function chromeHTML(page) {
         ${NAV.map(([label, href], i) => `<li><a href="${href}">${label}<span>0${i + 1}</span></a></li>`).join('')}
         <li><a href="contact.html">Contact<span>0${NAV.length + 1}</span></a></li>
       </ul>
-      <p class="mobile-nav__foot">Studio, 14 Meridian Lane, London E2<br>Digital wardrobe delivered by email.</p>
+      <p class="mobile-nav__foot">Studio, Iloilo City, Philippines<br>Digital wardrobe delivered by email.</p>
     </div>`,
 
     footer: `<footer class="footer">
@@ -208,7 +208,7 @@ function chromeHTML(page) {
         </div>
         <div class="footer__base">
           <span>&copy; 2026 Aethel &amp; Code. All rights reserved.</span>
-          <span>London &middot; Reykjav&iacute;k</span>
+          <span>Iloilo City &middot; Philippines</span>
         </div>
       </div>
     </footer>`
@@ -685,7 +685,7 @@ function initProduct() {
           <div class="acc__item">
             <button class="acc__trigger" type="button" aria-expanded="false" aria-controls="acc-4">Delivery &amp; returns <span class="acc__icon" aria-hidden="true"></span></button>
             <div class="acc__panel" id="acc-4" hidden>
-              <p>${isDigital ? product.format : 'Dispatched in 1–2 working days from London. Free tracked shipping over £250, £8 below. Returns within 30 days, unworn.'}</p>
+              <p>${isDigital ? product.format : 'Dispatched in 1–2 working days from the studio. Free tracked shipping over £250, £8 below. Returns within 30 days, unworn.'}</p>
               <p style="margin-top:.6rem"><a class="link-underline" href="policies.html">Read the full policy</a></p>
             </div>
           </div>

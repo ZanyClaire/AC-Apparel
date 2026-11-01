@@ -63,7 +63,7 @@ mutation StorefrontSetup {
       handle: "about"
       templateSuffix: "about"
       isPublished: true
-      body: "<p>Aethel &amp; Code makes garments and the digital twins they are built with.</p>"
+      body: "<p>Aethel &amp; Code makes garments and the digital twins they are built with.</p><p>We work from a studio in Iloilo City, Philippines. Write to <a href=\"mailto:studio@aethelandcode.com\">studio@aethelandcode.com</a> or call <a href=\"tel:+639705052279\">+63 970 505 2279</a>, Mon–Fri, 10:00–18:00 PHT.</p>"
     }
   ) {
     page { id handle }
