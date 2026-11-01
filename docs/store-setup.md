@@ -13,6 +13,30 @@ This starts after the theme is uploaded as an unpublished theme (Admin → Onlin
 
 ---
 
+## Install the theme
+
+Two routes, both fed from `theme/` in this repo.
+
+**GitHub connection (recommended).** Shopify's GitHub integration only accepts a theme whose files sit at the **root of the connected branch**. This repo's root is the static storefront, with the theme nested in `theme/`, so connecting `main` fails with *"Branch isn't a valid theme"*. [.github/workflows/publish-theme.yml](../.github/workflows/publish-theme.yml) mirrors `theme/` onto a generated **`shopify-theme`** branch on every push that touches `theme/`, after the theme checks pass.
+
+1. Push to `main` (or run the **Publish theme branch** workflow manually) and confirm the `shopify-theme` branch exists.
+2. Admin → **Online Store → Themes → Add theme → Connect from GitHub** → authorise the GitHub app for `ZanyClaire/AC-Apparel` if asked → branch **`shopify-theme`**.
+3. Shopify imports it as an unpublished theme. Preview it, then **Publish** when you're ready.
+
+Rules that follow from the mirror:
+
+- Edit `theme/` on `main`. Never edit the `shopify-theme` branch — it is rebuilt from scratch on each push, so anything committed there is discarded.
+- Edits made in Shopify's code editor on a connected theme are commits on that branch, and the next mirror overwrites them. Make theme edits in this repo instead.
+- The mirror is flat: `theme/layout` becomes `/layout` on the branch, and `theme/README.md` stays behind because it documents the theme rather than being part of it.
+
+**Upload a zip.** `aethel-and-code-theme.zip` in the repo root holds the same 52 files (the theme minus its README). Upload it with **Themes → Add theme → Upload zip** — useful for a one-off install or a client who has no repo access. Rebuild it after theme edits:
+
+```bash
+cd theme && zip -r ../aethel-and-code-theme.zip . -x 'README.md' && cd ..
+```
+
+---
+
 ## 1. Metafield definitions
 
 Admin → **Settings → Custom data → Products → Add definition**. The namespace must be `custom` — the theme reads `product.metafields.custom.*` literally. If a type is wrong the value silently renders blank, so match these exactly.
