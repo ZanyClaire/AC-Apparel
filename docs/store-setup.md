@@ -41,10 +41,12 @@ Checklist:
 **Verify them.** [scripts/verify-metafields.mjs](../scripts/verify-metafields.mjs) asks the Admin API for every `custom` product definition, prints each one with its expected and actual type, then checks active products for a missing or broken twin link:
 
 ```bash
-SHOPIFY_STORE_DOMAIN=your-store.myshopify.com \
-SHOPIFY_ADMIN_TOKEN=shpat_... \
+SHOPIFY_STORE_DOMAIN=<handle>.myshopify.com \
+SHOPIFY_CLIENT_ID=... SHOPIFY_CLIENT_SECRET=shps_... \
 node scripts/verify-metafields.mjs
 ```
+
+Pass `SHOPIFY_ADMIN_TOKEN=shpat_...` instead of the two app values if you already hold a token; otherwise `node scripts/prelaunch.mjs` and this script mint one from the app credentials first. That is the only route now: apps created in the [Dev Dashboard](https://dev.shopify.com) never display a copyable Admin API token, so the Client ID and secret from the app's **Settings** page are traded for a 24-hour `shpat_` token at `/admin/oauth/access_token`. The app must be installed on the store, with a released version carrying the `read_products` scope, and it must belong to the same Shopify organization as the store — otherwise Shopify answers `application_cannot_be_found` or `shop_not_permitted`.
 
 Exit `0` means all ten match and no twin link is broken; `1` lists what to fix. On the definition side: a missing key, a wrong type, or storefront access `NONE` (which hides the value from Liquid). On the product side: a garment with no `digital_twin`, a twin that doesn't resolve to a product, a twin that isn't flagged `is_digital_asset`, a twin that is draft or archived, or a twin pointing at the product itself. Draft and archived products are skipped.
 

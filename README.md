@@ -53,9 +53,9 @@ Validate the theme without a store:
 node scripts/validate-theme.mjs   # JSON, Liquid balance, section/snippet references
 ```
 
-The full pre-launch gate is `node scripts/prelaunch.mjs`: the theme checks above, then the live store audit (metafield definitions and digital-twin links). It needs `SHOPIFY_STORE_DOMAIN` and `SHOPIFY_ADMIN_TOKEN`; pass `--theme-only` when there is no store yet. Both checks exit `0` when clean, `1` on problems, `2` when they cannot run.
+The full pre-launch gate is `node scripts/prelaunch.mjs`: the theme checks above, then the live store audit (metafield definitions and digital-twin links). It needs `SHOPIFY_STORE_DOMAIN` plus either `SHOPIFY_ADMIN_TOKEN` or the app's `SHOPIFY_CLIENT_ID` and `SHOPIFY_CLIENT_SECRET`, from which a 24-hour token is minted; pass `--theme-only` when there is no store yet. Both checks exit `0` when clean, `1` on problems, `2` when they cannot run.
 
-CI runs the same gate on every push ([.github/workflows/prelaunch.yml](.github/workflows/prelaunch.yml)). It reads both values from repository secrets under Settings → Secrets and variables → Actions, and fails with a named error if either is missing rather than reporting an unverified pass.
+CI runs the same gate on every push ([.github/workflows/prelaunch.yml](.github/workflows/prelaunch.yml)). Shopify issues no long-lived token to copy for an app created in the Dev Dashboard, so the workflow holds `SHOPIFY_STORE_DOMAIN`, `SHOPIFY_CLIENT_ID` and `SHOPIFY_CLIENT_SECRET` as repository secrets under Settings → Secrets and variables → Actions and mints a token per run; it fails with a named error if any is missing rather than reporting an unverified pass.
 
 Pull requests run a lighter workflow, [.github/workflows/theme-check.yml](.github/workflows/theme-check.yml), which executes only the static theme checks and references no secrets at all — so a contributor without store access, including one opening a PR from a fork, still gets a pass or fail on their change.
 

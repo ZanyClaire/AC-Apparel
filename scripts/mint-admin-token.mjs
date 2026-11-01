@@ -25,6 +25,14 @@ import { pathToFileURL } from 'node:url';
 
 const SCOPE_NEEDED = 'read_products';
 
+/** Addresses copied from documentation that answer, but are nobody's store. */
+const PLACEHOLDER_DOMAINS = new Set([
+  'your-store.myshopify.com',
+  'yourstore.myshopify.com',
+  'example.myshopify.com',
+  'store.myshopify.com',
+]);
+
 class MintError extends Error {}
 
 function headerOffender(value) {
@@ -73,7 +81,13 @@ export function storeDomain(env) {
     .replace(/\/+$/, '');
   if (!/^[a-z0-9][a-z0-9.-]*\.[a-z]{2,}$/i.test(domain)) {
     throw new MintError(
-      `SHOPIFY_STORE_DOMAIN is not a domain like your-store.myshopify.com: ${domain}`,
+      `SHOPIFY_STORE_DOMAIN is not a domain like <handle>.myshopify.com: ${domain}`,
+    );
+  }
+  if (PLACEHOLDER_DOMAINS.has(domain.toLowerCase())) {
+    throw new MintError(
+      `SHOPIFY_STORE_DOMAIN is still the placeholder ${domain}, which is a Shopify canary host, not a store. ` +
+        "Use the store's real address: Shopify admin > Settings > Domains, or the handle in admin.shopify.com/store/<handle>.",
     );
   }
   return domain;
@@ -104,7 +118,7 @@ function hintFor(error = '') {
     case 'app_not_installed':
       return 'the app exists but is not installed on this store. Install it from the Dev Dashboard Home tab.';
     case 'http_404':
-      return 'no Shopify store answers at that domain. SHOPIFY_STORE_DOMAIN must be the store\'s own your-store.myshopify.com address.';
+      return 'no Shopify store answers at that domain. SHOPIFY_STORE_DOMAIN must be the store\'s own <handle>.myshopify.com address.';
     case 'http_423':
       return 'the store is locked or paused (for example an unpaid bill), so it will not issue tokens.';
     default:
@@ -135,6 +149,15 @@ export async function mintToken({ domain, clientId, clientSecret, fetchImpl = fe
     throw new MintError(`could not reach ${url}: ${error.message}`);
   }
 
+  // Fetch follows redirects, so a host that bounces elsewhere is not the store.
+  const finalHost = res.url ? new URL(res.url).host : '';
+  if (finalHost && finalHost !== domain) {
+    throw new MintError(
+      `${domain} redirected to ${finalHost}, so it is not a store of its own — a placeholder address from a ` +
+        "tutorial behaves exactly like this. Use the store's real <handle>.myshopify.com from Shopify admin > Settings > Domains.",
+    );
+  }
+
   const text = await res.text();
   let payload = null;
   try {
@@ -151,7 +174,7 @@ export async function mintToken({ domain, clientId, clientSecret, fetchImpl = fe
       throw new MintError(
         `${url} answered with a bot-verification page (HTTP ${res.status}) instead of the admin endpoint. ` +
           'Shopify serves that on storefront and custom domains, and to networks it does not trust, which CI ' +
-          "runners often are. Use the store's own your-store.myshopify.com address.",
+          "runners often are. Use the store's own <handle>.myshopify.com address.",
       );
     }
     const code =
