@@ -140,6 +140,10 @@ Admin → **Products → Collections**. Handles are load-bearing: `digital` is *
 
 ## 4. Products
 
+**Seed demo content.** `node scripts/seed-demo.mjs` creates one garment and its twin, links `custom.digital_twin`, and puts both in the `digital` collection. It matches products by handle, so re-running updates rather than duplicates, and it needs the `write_products` scope.
+
+Without that scope, import [demo-products.csv](demo-products.csv) instead — **Products → Import** in the admin, which uses your own login rather than an API token. It creates the same two products, prices and metafield values; the twin reference is written as the referenced product's handle. The CSV cannot create the collection, so afterwards make one with handle `digital` and add the twin to it. `node scripts/seed-demo.mjs --emit-csv` regenerates the file if the demo copy changes.
+
 ### 4a. Garment
 
 - [ ] Title, **Product type** (`Outerwear` or `Trousers`) — the collection chips are built from `collection.all_types`, so inconsistent casing creates duplicate chips like `outerwear` and `Outerwear`.
