@@ -1,1 +1,13 @@
+# Build output for the static preview
 /freebuff-sites-build/
+
+# Credentials and local environment — an Admin API token must never be committed
+.env
+.env.*
+*.pem
+*.key
+!.env.example
+
+# OS noise
+.DS_Store
+Thumbs.db
